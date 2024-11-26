@@ -4,7 +4,10 @@ const { Server } = require("socket.io");
 const httpServer = createServer();
 httpServer.listen(3000);
 const io = new Server(httpServer, {
-  cors: "http://localhost:5173/",
+  cors: {
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST"]
+  },
 });
 
 const allUsers = {};
