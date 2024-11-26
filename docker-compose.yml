@@ -1,0 +1,23 @@
+services:
+  backend:
+    container_name: backend
+    build: ./Server
+    ports:
+      - "3000:3000"
+    networks:
+      - mynetwork
+    environment:
+      - IP=${VITE_IP}
+    env_file:
+      - path: .env
+  frontend:
+    container_name: frontend
+    build: ./Client
+    ports:
+      - "80:80"
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    driver: bridge
