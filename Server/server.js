@@ -2,6 +2,7 @@ const { createServer } = require("http");
 const { Server } = require("socket.io");
 
 const httpServer = createServer();
+httpServer.listen(3000);
 const io = new Server(httpServer, {
   cors: "http://localhost:5173/",
 });
@@ -23,6 +24,9 @@ io.on("connection", (socket) => {
 
     for (const key in allUsers) {
       const user = allUsers[key];
+      if (user.playerName === currentUser.playerName) {
+        continue;
+      }
       if (user.online && !user.playing && socket.id !== key) {
         opponentPlayer = user;
         break;
@@ -34,6 +38,9 @@ io.on("connection", (socket) => {
         player1: opponentPlayer,
         player2: currentUser,
       });
+
+      currentUser.playing = true;
+      opponentPlayer.playing = true;
 
       currentUser.socket.emit("OpponentFound", {
         opponentName: opponentPlayer.playerName,
@@ -70,16 +77,16 @@ io.on("connection", (socket) => {
       const { player1, player2 } = allRooms[index];
 
       if (player1.socket.id === socket.id) {
+        allRooms.splice(index, 1);
         player2.socket.emit("opponentLeftMatch");
         break;
       }
 
       if (player2.socket.id === socket.id) {
+        allRooms.splice(index, 1);
         player1.socket.emit("opponentLeftMatch");
         break;
       }
     }
   });
 });
-
-httpServer.listen(3000);
