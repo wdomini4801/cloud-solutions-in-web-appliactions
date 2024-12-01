@@ -128,6 +128,20 @@ resource "terraform_data" "app_ssh_connection" {
   }
 }
 
+# Konfiguracja pliku inventory dla Ansible
+resource "null_resource" "append_inventory" {
+  provisioner "local-exec" {
+    command = <<EOT
+      echo "[app]" >> ./inventory.ini
+      echo "${aws_instance.app_instance.public_ip}" >> ./inventory.ini
+    EOT
+  }
+
+  triggers = {
+    instance_ip = aws_instance.app_instance.public_ip
+  }
+}
+
 # Uruchomienie procesu konfiguracji instancji z użyciem Ansible
 resource "terraform_data" "ansible_app_provisioner" {
   provisioner "local-exec" {
