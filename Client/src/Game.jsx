@@ -3,6 +3,8 @@ import "./Game.css";
 import Square from "./Square/Square";
 import {io} from "socket.io-client";
 import Swal from "sweetalert2";
+import { jwtDecode } from "jwt-decode";
+import {getUsername, isTokenExpired, refreshToken} from "./Auth.jsx";
 
 const renderFrom = [
     [1, 2, 3],
@@ -18,7 +20,7 @@ const Game = () => {
     const [finishedState, setFinishedState] = useState(false);
     const [finishedArrayState, setFinishedArrayState] = useState([]);
     const [playOnline, setPlayOnline] = useState(false);
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState(!!window.localStorage.getItem("access_token"));
     const [socket, setSocket] = useState(null);
     const [playerName, setPlayerName] = useState("");
     const [opponentName, setOpponentName] = useState(null);
@@ -80,20 +82,15 @@ const Game = () => {
         }
     }, [gameState]);
 
-    const takePlayerName = async () => {
-        const result = await Swal.fire({
-            title: "Enter your name",
-            input: "text",
-            showCancelButton: true,
-            inputValidator: (value) => {
-                if (!value) {
-                    return "You need to write something!";
-                }
+    if(finishedState && finishedState !== "opponentLeftMatch" && finishedState !== "draw") {
+        socket.emit("results", {
+            result: {
+                playerName: playerName,
+                result: finishedState === playingAs ? 0  : 1,
             },
         });
-
-        return result;
-    };
+        console.log("Sending result to server");
+    }
 
     socket?.on("opponentLeftMatch", () => {
         setFinishedState("opponentLeftMatch");
@@ -124,10 +121,18 @@ const Game = () => {
         setOpponentName(data.opponentName);
     });
 
+    async function connectToServer() {
+        if (isTokenExpired()) {
+            await refreshToken();
+        }
 
-    function connectToServer() {
+        const headers = {
+            Authorization: `Bearer ${window.localStorage.getItem("access_token")}`
+        }
+
         const newSocket = io("http://"+ip+":3000", {
             autoConnect: true,
+            extraHeaders: headers
         });
 
         newSocket?.emit("request_to_play", {
@@ -138,23 +143,17 @@ const Game = () => {
     }
 
     async function playOnlineClick() {
-        const result = await takePlayerName();
-
-        if (!result.isConfirmed) {
-            return;
-        }
-
-        const username = result.value;
+        const username = getUsername();
         setPlayerName(username);
-        setNewGame(true);
+        setIsNewGame(true);
     }
 
     useEffect(() => {
-        if (newGame) {
+        if (isNewGame) {
             connectToServer();
-            setNewGame(false);
+            setIsNewGame(false);
         }
-    }, [newGame]);
+    }, [isNewGame]);
 
     function playAgainClick() {
         socket.disconnect();
@@ -165,12 +164,12 @@ const Game = () => {
         setOpponentName(null);
         setPlayingAs(null);
         setPlayOnline(false);
-        setNewGame(true);
+        setIsNewGame(true);
     }
 
     if(!isAuthenticated) {
         Swal.fire({
-            title: "You need to log in first",
+            title: "You need to login first",
             icon: "error",
         });
         document.location.href = "/login";
@@ -207,14 +206,14 @@ const Game = () => {
                 finishedState !== "opponentLeftMatch" &&
                 finishedState !== "draw" && (
                     <h3 className="finished-state">
-                        {finishedState === playingAs ? "You won " : "You lost "} the
+                        {finishedState === playingAs ? "You won " : "You lost "}the
                         game
                     </h3>
                 )}
             {finishedState &&
                 finishedState !== "opponentLeftMatch" &&
                 finishedState === "draw" && (
-                    <h3 className="finished-state">It's a draw</h3>
+                    <h3 className="finished-state">It's a Draw</h3>
                 )}
             {!finishedState && opponentName && (
                 <h2>
