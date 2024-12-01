@@ -6,8 +6,8 @@ httpServer.listen(3000);
 const ip = process.env.IP;
 const io = new Server(httpServer, {
   cors: {
-    // origin: "http://localhost:5173",
-    origin: 'http://'+ip,
+    origin: "http://localhost:5173",
+    // origin: 'http://'+ip,
     methods: ["GET", "POST"]
   },
 });
