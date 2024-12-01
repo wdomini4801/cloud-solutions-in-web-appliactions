@@ -8,7 +8,8 @@
     "cors": "^2.8.5",
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
-    "jwk-to-pem": "^2.0.5"
+    "jwk-to-pem": "^2.0.5",
+    "sync-fetch": "^0.5.2"
   },
   "scripts": {
     "start": "node server.js"

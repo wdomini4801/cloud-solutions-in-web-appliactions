@@ -33,8 +33,7 @@ async function refreshToken(){
         window.localStorage.setItem("id_token", tokens.id_token);
 
         return tokens;
-    } catch (error) {
-    }
+    } catch (error) { /* empty */ }
 }
 
 async function postData(url, data, headers) {

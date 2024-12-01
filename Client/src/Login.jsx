@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 
-import {Link, useSearchParams} from "react-router-dom";
+import {useSearchParams} from "react-router-dom";
 
 const Login = () => {
 
@@ -30,15 +30,13 @@ const Login = () => {
             const params = {
                 auth_code: authCode,
             };
-
-            const server_ip = import.meta.env.VITE_SERVER_IP;
             const server_port = import.meta.env.VITE_SERVER_PORT;
-            const url = 'http://'+server_ip+':'+server_port+'/exchange-code';
+            const url = 'http://'+window.location.hostname+':'+server_port+'/exchange-code';
 
             axios.get(url, { params })
                 .then(response => {
                     setData(response.data);
-
+                    console.log(response.data);
                 })
                 .catch(error => {
                     setError(error);

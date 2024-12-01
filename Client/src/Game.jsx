@@ -3,7 +3,6 @@ import "./Game.css";
 import Square from "./Square/Square";
 import {io} from "socket.io-client";
 import Swal from "sweetalert2";
-import { jwtDecode } from "jwt-decode";
 import {getUsername, isTokenExpired, refreshToken} from "./Auth.jsx";
 
 const renderFrom = [
@@ -129,7 +128,7 @@ const Game = () => {
             Authorization: `Bearer ${window.localStorage.getItem("access_token")}`
         }
 
-        const newSocket = io("http://"+ip+":3000", {
+        const newSocket = io("https://"+ip+":3000", {
             autoConnect: true,
             extraHeaders: headers
         });

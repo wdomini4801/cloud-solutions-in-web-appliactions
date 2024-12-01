@@ -1,7 +1,7 @@
-const {response} = require("express");
 const {post} = require("axios");
 const jwkToPem = require('jwk-to-pem');
 const jsonwebtoken = require('jsonwebtoken');
+const fetch = require("sync-fetch");
 
 const jsonWebKeys = [
     {
@@ -35,7 +35,7 @@ function getJsonWebKeyWithKID(kid) {
             return jwk;
         }
     }
-    return null
+    return null;
 }
 
 function verifyJsonWebTokenSignature(token, jsonWebKey) {
@@ -66,36 +66,59 @@ async function postData(url, data, headers) {
     }
 }
 
+function getIp(){
+    const data = fetch('https://api.ipify.org?format=json').json();
+    console.log(data);
+    return data.ip;
+}
+
+let ip = ""
+
+if(process.env.VITE_DEPLOYMENT_TYPE === "local") {
+    ip = "localhost";
+}
+else if(process.env.VITE_DEPLOYMENT_TYPE === "remote") {
+    ip = getIp();
+}
+
 async function exchange_code(code) {
+    const url = "https://us-east-1kius0fmq0.auth.us-east-1.amazoncognito.com/oauth2/token";
     const client_id = process.env.VITE_CLIENT_ID;
-    const ip= process.env.VITE_CLIENT_IP;
-    const port= process.env.VITE_CLIENT_PORT;
+    const port = process.env.VITE_CLIENT_PORT;
     let redirect_uri= "";
-    if(port === "80"){
+
+    if(port === "80") {
         redirect_uri = "http://"+ip+"/login";
     }
-    else if (port === 443){
+
+    else if (port === "443") {
         redirect_uri = "https://"+ip+"/login";
     }
+
     else {
         redirect_uri = "http://"+ip+":"+port+"/login";
     }
+
     const headers = {
         "Content-Type": "application/x-www-form-urlencoded",
         Authorization: "Basic " + btoa(client_id),
     };
+
     const data = {
         grant_type: "authorization_code",
         client_id: client_id,
         code: code,
         redirect_uri: redirect_uri,
     };
+    console.log("url", url);
+    console.log("data", data);
+    console.log("headers", headers);
     try {
+        return await postData(url, data, headers);
+    } catch (error) {
         console.log("url", url);
         console.log("data", data);
         console.log("headers", headers);
-        return await postData(url, data, headers);
-    } catch (error) {
     }
 }
 
