@@ -1,0 +1,66 @@
+---
+- hosts: all
+  become: true
+  tasks:
+    - name: Install necessary dependencies
+      apt:
+        name: "{{item}}"
+        state: present
+        update_cache: yes
+      loop:
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - gnupg-agent
+        - software-properties-common
+        
+    - name: Add GPG keys
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+        
+    - name: Add Docker repo
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu jammy stable
+        state: present
+        
+    - name: Install docker
+      apt:
+        name: "{{item}}"
+        state: latest
+        update_cache: yes
+      loop:
+        - docker-ce
+        - docker-ce-cli
+        - containerd.io
+        
+    - name: Check if Docker service is active
+      service:
+        name: docker
+        state: started
+        enabled: yes
+        
+    - name: Clone git repo
+      git:
+        repo: https://github.com/wdomini4801/cloud-solutions-in-web-appliactions.git
+        dest: /home/cloud
+        clone: yes
+        update: yes
+        
+    - name: Write .env file
+      copy:
+        content: |
+          VITE_IP="{{ ansible_ssh_host }}"
+        dest: /home/cloud/.env
+        
+    - name: Write .env file for client
+      copy:
+        content: |
+          VITE_IP="{{ ansible_ssh_host }}"
+        dest: /home/cloud/Client/.env
+        
+    - name: Start app
+      command: docker compose up -d
+      args:
+        chdir: /home/cloud
+        
