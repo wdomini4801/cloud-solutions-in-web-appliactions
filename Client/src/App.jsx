@@ -1,6 +1,7 @@
 import React from "react";
 import {BrowserRouter as Router, Route, redirect, Routes} from 'react-router-dom';
 import Game from './Game';
+import Login from './Login';
 
 const App = () => {
   return (

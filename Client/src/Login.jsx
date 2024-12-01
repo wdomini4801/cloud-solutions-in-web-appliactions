@@ -11,14 +11,15 @@ const Login = () => {
     const [error, setError] = useState(null);
 
     const handleSubmit = async (e) => {
-        document.location.href = 'https://us-east-1kius0fmq0.auth.us-east-1.amazoncognito.com/login?client_id=3g1kiuq5c9n7hkpjc0m59h1dd6&response_type=code&redirect_uri=http://localhost:5173/login';
+        document.location.href = 'https://us-east-1kius0fmq0.auth.us-east-1.amazoncognito.com/login?client_id=3g1kiuq5c9n7hkpjc0m59h1dd6&response_type=code&redirect_uri='+window.location.href;
     };
+
     if(!authCode) {
         return (
             <div className="login-container">
                 <h1>Login</h1>
                 <form onSubmit={handleSubmit}>
-                    <input type='button' value='back' className="btn" onClick={handleSubmit}/>
+                    <input type='button' value='Login' className="btn" onClick={handleSubmit}/>
                 </form>
             </div>
         );
@@ -29,7 +30,9 @@ const Login = () => {
                 auth_code: authCode ,
             };
 
-            const url = 'http://localhost:3000/exchange-code';
+            const server_ip = import.meta.env.VITE_SERVER_IP;
+            const server_port = import.meta.env.VITE_SERVER_PORT;
+            const url = 'http://'+server_ip+':'+server_port+'/exchange-code';
 
             axios.get(url, { params })
                 .then(response => {
@@ -47,7 +50,6 @@ const Login = () => {
             window.localStorage.setItem('expires_in', data.data.expires_in);
             window.localStorage.setItem('token_type', data.data.token_type);
         }
-
     }
 };
 
