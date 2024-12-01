@@ -14,7 +14,8 @@ function isTokenExpired() {
 
 async function refreshToken(){
     const url = "https://us-east-1kius0fmq0.auth.us-east-1.amazoncognito.com/oauth2/token";
-    const client_id = import.meta.env.VITE_CLIENT_ID;
+    // const client_id = import.meta.env.VITE_CLIENT_ID;
+    const client_id = "3g1kiuq5c9n7hkpjc0m59h1dd6";
     console.log("client_id"+client_id);
     const headers = {
         "Content-Type": "application/x-www-form-urlencoded",

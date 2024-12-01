@@ -12,7 +12,8 @@ const renderFrom = [
 ];
 
 const Game = () => {
-    const ip = window.location.hostname;
+    // const ip = window.location.hostname;
+    const ip = "localhost";
     const [gameState, setGameState] = useState(JSON.parse(JSON.stringify(renderFrom)));
     const [currentPlayer, setCurrentPlayer] = useState("circle");
     const [finishedState, setFinishedState] = useState(false);
@@ -128,7 +129,7 @@ const Game = () => {
             Authorization: `Bearer ${window.localStorage.getItem("access_token")}`
         }
 
-        const newSocket = io("https://"+ip+":3000", {
+        const newSocket = io("http://"+ip+":3000", {
             autoConnect: true,
             extraHeaders: headers
         });

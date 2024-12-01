@@ -17,16 +17,17 @@ function getIp(){
   return data.ip;
 }
 
-let ip = "";
-if (process.env.VITE_DEPLOYMENT_TYPE === "local") {
-  ip = "localhost";
-}
+let ip = "localhost";
+// if (process.env.VITE_DEPLOYMENT_TYPE === "local") {
+//   ip = "localhost";
+// }
+//
+// else if(process.env.VITE_DEPLOYMENT_TYPE === "remote") {
+//   ip = getIp();
+// }
 
-else if(process.env.VITE_DEPLOYMENT_TYPE === "remote") {
-  ip = getIp();
-}
-
-let port = process.env.VITE_CLIENT_PORT;
+// let port = process.env.VITE_CLIENT_PORT;
+let port = "5173";
 let origin = "";
 
 if (port === "80") {
@@ -60,14 +61,15 @@ app.get('/exchange-code', (req, res) => {
   exchange_code(auth_code).then((data) => {res.status(200).json({ data })});
 });
 
-const privateKey = readFileSync('key.pem');
-const certificate = readFileSync('cert.pem');
+const privateKey = readFileSync('../key.pem');
+const certificate = readFileSync('../cert.pem');
 
 // Create HTTP server
-const httpsServer = createServer({
-  key: privateKey,
-  cert: certificate
-}, app);
+// const httpsServer = createServer({
+//   key: privateKey,
+//   cert: certificate
+// }, app);
+const httpsServer = createServer(app);
 
 httpsServer.listen(3000);
 

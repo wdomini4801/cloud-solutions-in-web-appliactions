@@ -30,7 +30,8 @@ const Login = () => {
             const params = {
                 auth_code: authCode,
             };
-            const server_port = import.meta.env.VITE_SERVER_PORT;
+            // const server_port = import.meta.env.VITE_SERVER_PORT;
+            const server_port = "3000";
             const url = 'http://'+window.location.hostname+':'+server_port+'/exchange-code';
 
             axios.get(url, { params })
