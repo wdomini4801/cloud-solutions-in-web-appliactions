@@ -13,7 +13,7 @@ const renderFrom = [
 ];
 
 const Game = () => {
-    const ip = import.meta.env.VITE_IP;
+    const ip = window.location.hostname;
     const [gameState, setGameState] = useState(JSON.parse(JSON.stringify(renderFrom)));
     const [currentPlayer, setCurrentPlayer] = useState("circle");
     const [finishedState, setFinishedState] = useState(false);

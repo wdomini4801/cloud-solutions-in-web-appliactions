@@ -7,14 +7,20 @@ services:
     networks:
       - mynetwork
     environment:
-      - IP=${VITE_IP}
+      - VITE_CLIENT_IP=${VITE_CLIENT_IP}
+      - VITE_CLIENT_PORT=${VITE_CLIENT_PORT}
+      - VITE_CLIENT_ID=${VITE_CLIENT_ID}
     env_file:
       - path: .env
   frontend:
     container_name: frontend
     build: ./Client
+    environment:
+      - VITE_SERVER_IP=${VITE_SERVER_IP}
+      - VITE_SERVER_PORT=${VITE_SERVER_PORT}
+      - VITE_CLIENT_ID=${VITE_CLIENT_ID}
     ports:
-      - "80:80"
+      - "443:443"
     networks:
       - mynetwork
 

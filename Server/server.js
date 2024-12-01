@@ -8,14 +8,32 @@ const exchange_code = require('./auth').exchange_code;
 
 // Create an Express application
 const app = express();
-const ip = process.env.IP;
+const ip = process.env.VITE_CLIENT_IP;
+let port = process.env.VITE_CLIENT_PORT;
+let origin = ""
+
+if (port === "80"){
+  origin = "http://"+ip;
+}
+
+else if (port === "443"){
+  origin = "https://"+ip;
+}
+
+else {
+  origin = "http://"+ip+":"+port;
+}
+
+console.log("ORIGIN", origin);
+
+console.log("AAAAAAA", ip, port);
 
 // Middleware to parse JSON bodies
 app.use(bodyParser.json());
 
 // CORS configuration
 const corsOptions = {
-  origin: 'http://' + ip,
+  origin: origin,
   methods: ['GET', 'POST'],
 };
 
@@ -32,7 +50,7 @@ httpServer.listen(3000);
 
 const io = new Server(httpServer, {
   cors: {
-    origin: 'http://' + ip,
+    origin: origin,
     methods: ["GET", "POST"]
   },
 });
