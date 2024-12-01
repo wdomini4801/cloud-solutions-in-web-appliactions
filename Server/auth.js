@@ -67,20 +67,9 @@ async function postData(url, data, headers) {
 }
 
 async function exchange_code(code) {
-    const client_id = process.env. VITE_CLIENT_ID;
-    const client_secret = process.env.VITE_CLIENT_SECRET;
-    const ip = process.env.VITE_CLIENT_IP;
-    const port = process.env.VITE_CLIENT_PORT;
-    let redirect_uri="";
-    if (port == "80") {
-        redirect_uri = "http://"+ip+"/login";
-    }
-    else if (port == 443) {
-        redirect_uri = "https://"+ip+"/login";
-    }
-    else {
-        redirect_uri = "http://"+ip+":"+port+"/login";
-    }
+    const url = 'https://us-east-1kius0fmq0.auth.us-east-1.amazoncognito.com/oauth2/token';
+    const client_id = process.env.CLIENT_ID;
+    const client_secret = process.env.CLIENT_SECRET;
     const headers = {
         "Content-Type": "application/x-www-form-urlencoded",
         Authorization: "Basic " + btoa(client_id + ":" + client_secret),
@@ -89,7 +78,7 @@ async function exchange_code(code) {
         grant_type: "authorization_code",
         client_id: client_id,
         code: code,
-        redirect_uri: redirect_uri,
+        redirect_uri: 'http://localhost:5173/login',
     };
     try {
         console.log("url", url);

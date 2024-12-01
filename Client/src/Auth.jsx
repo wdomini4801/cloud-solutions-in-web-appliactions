@@ -13,13 +13,12 @@ function isTokenExpired() {
 }
 
 async function refreshToken(){
-    const url ="https://us-east-1kius0fmq0.auth.us-east-1.amazoncognito.com/oauth2/token"
+    const url = "https://us-east-1kius0fmq0.auth.us-east-1.amazoncognito.com/oauth2/token";
     const client_id = import.meta.env.VITE_CLIENT_ID;
-    const client_secret = import.meta.env.VITE_CLIENT_SECRET;
     console.log("client_id"+client_id);
     const headers = {
         "Content-Type": "application/x-www-form-urlencoded",
-        Authorization: "Basic " + btoa(client_id + ":" + client_secret),
+        Authorization: "Basic " + btoa(client_id),
     };
 
     const data = {
@@ -29,9 +28,10 @@ async function refreshToken(){
     };
 
     try {
-        const tokens =  await postData(url, data, headers);
+        const tokens = await postData(url, data, headers);
         window.localStorage.setItem("access_token", tokens.access_token);
         window.localStorage.setItem("id_token", tokens.id_token);
+
         return tokens;
     } catch (error) {
     }
@@ -40,7 +40,7 @@ async function refreshToken(){
 async function postData(url, data, headers) {
     try {
         const response = await axios.post(url, data, { headers: headers });
-        console.log(response.data)
+        console.log(response.data);
         return response.data;
     } catch (error) {
         console.log("ERROR");
@@ -48,4 +48,4 @@ async function postData(url, data, headers) {
     }
 }
 
-export { getUsername, isTokenExpired ,refreshToken};
+export { getUsername, isTokenExpired , refreshToken };

@@ -8,25 +8,14 @@ const exchange_code = require('./auth').exchange_code;
 
 // Create an Express application
 const app = express();
-const ip = process.env.VITE_CLIENT_IP;
-let port = process.env.VITE_CLIENT_PORT;
-let origin = ""
-if (port === "80"){
-  origin = "http://"+ip;
-}
-else if (port === "443") {
-  origin = "https://"+ip;
-}
-else {
-  origin = "http://"+ip+":"+port;
-}
+const ip = process.env.IP;
 
 // Middleware to parse JSON bodies
 app.use(bodyParser.json());
 
 // CORS configuration
 const corsOptions = {
-  origin: origin,
+  origin: 'http://' + ip,
   methods: ['GET', 'POST'],
 };
 
@@ -43,7 +32,7 @@ httpServer.listen(3000);
 
 const io = new Server(httpServer, {
   cors: {
-    origin: origin,
+    origin: 'http://' + ip,
     methods: ["GET", "POST"]
   },
 });
@@ -69,7 +58,6 @@ io.on("connection", (socket) => {
   socket.on("request_to_play", (data) => {
     const currentUser = allUsers[socket.id];
     currentUser.playerName = data.playerName;
-
     let opponentPlayer;
 
     for (const key in allUsers) {
@@ -139,7 +127,7 @@ io.on("connection", (socket) => {
       }
     }
   });
-  socket.on("results",(results)=>{
+  socket.on("results",(results)=> {
     console.log(results);
   })
 });

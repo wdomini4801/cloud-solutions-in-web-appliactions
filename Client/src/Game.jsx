@@ -13,8 +13,7 @@ const renderFrom = [
 ];
 
 const Game = () => {
-    // const ip = 'localhost';
-    const ip = window.location.hostname;
+    const ip = import.meta.env.VITE_IP;
     const [gameState, setGameState] = useState(JSON.parse(JSON.stringify(renderFrom)));
     const [currentPlayer, setCurrentPlayer] = useState("circle");
     const [finishedState, setFinishedState] = useState(false);
@@ -82,11 +81,11 @@ const Game = () => {
         }
     }, [gameState]);
 
-    if(finishedState && finishedState !== "opponentLeftMatch" && finishedState !== "draw") {
+    if (finishedState && finishedState !== "opponentLeftMatch" && finishedState !== "draw") {
         socket.emit("results", {
             result: {
                 playerName: playerName,
-                result: finishedState === playingAs ? 0  : 1,
+                result: finishedState === playingAs ? 0 : 1,
             },
         });
         console.log("Sending result to server");
@@ -142,18 +141,18 @@ const Game = () => {
         setSocket(newSocket);
     }
 
-    async function playOnlineClick() {
+    async function playOnlineClick(){
         const username = getUsername();
         setPlayerName(username);
-        setIsNewGame(true);
+        setNewGame(true);
     }
 
     useEffect(() => {
-        if (isNewGame) {
+        if (newGame) {
             connectToServer();
-            setIsNewGame(false);
+            setNewGame(false);
         }
-    }, [isNewGame]);
+    }, [newGame]);
 
     function playAgainClick() {
         socket.disconnect();
@@ -164,12 +163,12 @@ const Game = () => {
         setOpponentName(null);
         setPlayingAs(null);
         setPlayOnline(false);
-        setIsNewGame(true);
+        setNewGame(true);
     }
 
     if(!isAuthenticated) {
         Swal.fire({
-            title: "You need to login first",
+            title: "You need to log in first",
             icon: "error",
         });
         document.location.href = "/login";
@@ -206,7 +205,7 @@ const Game = () => {
                 finishedState !== "opponentLeftMatch" &&
                 finishedState !== "draw" && (
                     <h3 className="finished-state">
-                        {finishedState === playingAs ? "You won " : "You lost "}the
+                        {finishedState === playingAs ? "You won " : "You lost "} the
                         game
                     </h3>
                 )}
