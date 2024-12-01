@@ -11,8 +11,8 @@ const renderFrom = [
 ];
 
 const Game = () => {
-    const ip = 'localhost';
-    // const ip = import.meta.env.VITE_IP;
+    // const ip = 'localhost';
+    const ip = import.meta.env.VITE_IP;
     const [gameState, setGameState] = useState(JSON.parse(JSON.stringify(renderFrom)));
     const [currentPlayer, setCurrentPlayer] = useState("circle");
     const [finishedState, setFinishedState] = useState(false);
@@ -166,6 +166,14 @@ const Game = () => {
         setPlayingAs(null);
         setPlayOnline(false);
         setNewGame(true);
+    }
+
+    if(!isAuthenticated) {
+        Swal.fire({
+            title: "You need to log in first",
+            icon: "error",
+        });
+        document.location.href = "/login";
     }
 
     if (!playOnline) {
