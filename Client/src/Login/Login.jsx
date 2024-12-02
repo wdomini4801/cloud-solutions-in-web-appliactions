@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import axios from 'axios';
-import './Login.css';
+import '../Game/Game.css';
 
 import {useSearchParams} from "react-router-dom";
 
@@ -11,20 +11,35 @@ const Login = () => {
     const [data, setData] = useState(null);
     const [error, setError] = useState(null);
 
+    const client_port = "5173";
+
     const handleSubmit = async (e) => {
+        let redirect_uri;
+
+        if (client_port === "80") {
+            redirect_uri = 'http://'+window.location.hostname+'/login';
+        }
+
+        else if (client_port === "443") {
+            redirect_uri = 'https://'+window.location.hostname+'/login';
+        }
+
+        else {
+            redirect_uri = 'http://'+window.location.hostname+':'+client_port+'/login';
+        }
+
         document.location.href = 'https://us-east-1kius0fmq0.auth.us-east-1.amazoncognito.com/login?' +
-            'client_id=3g1kiuq5c9n7hkpjc0m59h1dd6&response_type=code&redirect_uri='+window.location.href;
+            'client_id=3g1kiuq5c9n7hkpjc0m59h1dd6&response_type=code&redirect_uri='+redirect_uri;
     };
 
     if(!authCode) {
         return (
-            <div className="login-container">
-                <h1>Login</h1>
-                <form onSubmit={handleSubmit}>
-                    <input type='button' value='Login' className="btn" onClick={handleSubmit}/>
-                </form>
+            <div className="main-div">
+                <button onClick={handleSubmit} className="clickButton">
+                    Log in to play
+                </button>
             </div>
-        );
+    );
     }
     else {
         useEffect(() => {

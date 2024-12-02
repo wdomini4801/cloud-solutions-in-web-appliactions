@@ -177,7 +177,7 @@ const Game = () => {
     if (!playOnline) {
         return (
             <div className="main-div">
-                <button onClick={playOnlineClick} className="playOnline">
+                <button onClick={playOnlineClick} className="clickButton">
                     Play Tic-tac-toe
                 </button>
             </div>
