@@ -58,11 +58,13 @@ app.use(cors(corsOptions));
 app.get('/exchange-code', (req, res) => {
   console.log("reached endpoint");
   let auth_code = req.query.auth_code;
-  exchange_code(auth_code).then((data) => {res.status(200).json({ data })});
+  exchange_code(auth_code).then((data) => {res.status(200).json({ data })}).catch(
+      res => res.status(400).json({ error: res.message })
+  );
 });
 
-const privateKey = readFileSync('../key.pem');
-const certificate = readFileSync('../cert.pem');
+// const privateKey = readFileSync('../key.pem');
+// const certificate = readFileSync('../cert.pem');
 
 // Create HTTP server
 // const httpsServer = createServer({

@@ -52,16 +52,19 @@ function validateToken(token) {
     token = token.split(' ')[1];
     const header = decodeTokenHeader(token);
     const jsonWebKey = getJsonWebKeyWithKID(header.kid);
-    return verifyJsonWebTokenSignature(token, jsonWebKey);
+    return verifyJsonWebTokenSignature(token, jsonWebKey);s
 }
 
 async function postData(url, data, headers) {
     try {
-        const response = await post(url, data, { headers: headers });
+        const response= await post(url, data, { headers: headers });
         console.log("OK");
         return response.data;
     } catch (error) {
-        console.log("ERROR");
+        console.log("ERROR - postData");
+        console.log(url);
+        console.log(data);
+        console.log(headers);
         // Optional: re-throw the error to handle it further up the call stack
     }
 }
@@ -103,7 +106,6 @@ async function exchange_code(code) {
 
     const headers = {
         "Content-Type": "application/x-www-form-urlencoded",
-        Authorization: "Basic " + btoa(client_id),
     };
 
     const data = {
@@ -112,15 +114,10 @@ async function exchange_code(code) {
         code: code,
         redirect_uri: redirect_uri,
     };
-    console.log("url", url);
-    console.log("data", data);
-    console.log("headers", headers);
     try {
         return await postData(url, data, headers);
     } catch (error) {
-        console.log("url", url);
-        console.log("data", data);
-        console.log("headers", headers);
+        console.log("ERROR - exchange code auth");
     }
 }
 

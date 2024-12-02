@@ -19,7 +19,6 @@ async function refreshToken(){
     console.log("client_id"+client_id);
     const headers = {
         "Content-Type": "application/x-www-form-urlencoded",
-        Authorization: "Basic " + btoa(client_id),
     };
 
     const data = {
