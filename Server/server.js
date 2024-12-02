@@ -42,8 +42,6 @@ else {
   origin = "http://"+ip+":"+port;
 }
 
-const publicIp= ip;
-
 // Middleware to parse JSON bodies
 app.use(bodyParser.json());
 
@@ -184,4 +182,3 @@ io.on("connection", (socket) => {
 });
 
 console.log('Server is listening on port 3000');
-module.exports = {publicIp};

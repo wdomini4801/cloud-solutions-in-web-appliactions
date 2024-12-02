@@ -82,19 +82,28 @@ const Game = () => {
 
     useEffect(() => {
         const winner = checkWinner();
-        if (winner) {
+        if (winner && !finishedState) {
             setFinishedState(winner);
-        }
-    }, [gameState]);
 
-    if (finishedState && finishedState !== "opponentLeftMatch" && finishedState !== "draw") {
-        socket.emit("results", {
-            result: {
-                playerName: playerName,
-                result: finishedState === playingAs ? 0 : 1,
-            },
-        });
-    }
+            if (winner !== "opponentLeftMatch" && winner !== "draw") {
+                socket.emit("results", {
+                    result: {
+                        playerName: playerName,
+                        result: winner === playingAs ? 0 : 1,
+                    },
+                });
+            }
+
+            if (winner === "draw") {
+                socket.emit("results", {
+                    result: {
+                        playerName: playerName,
+                        result: 0.5,
+                    },
+                });
+            }
+        }
+    }, [gameState, finishedState]);
 
     socket?.on("opponentLeftMatch", () => {
         setFinishedState("opponentLeftMatch");
