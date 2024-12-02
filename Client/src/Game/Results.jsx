@@ -36,9 +36,7 @@ const Results = () => {
     },[]);
 
     return (
-
         <div>
-
             <table>
                 <thead>
                 <tr>
@@ -52,7 +50,7 @@ const Results = () => {
                     <tr key={index}>
                         <td>{item.Player1}</td>
                         <td>{item.Result}</td>
-                        <td>{item.GameTime}</td>
+                        <td>{new Date(item.GameTime).toLocaleString()}</td>
                     </tr>
                 ))}
                 </tbody>
