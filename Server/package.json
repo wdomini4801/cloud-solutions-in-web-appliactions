@@ -9,7 +9,8 @@
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
     "jwk-to-pem": "^2.0.5",
-    "sync-fetch": "^0.5.2"
+    "sync-fetch": "^0.5.2",
+    "mysql": "^2.18.1"
   },
   "scripts": {
     "start": "node server.js"

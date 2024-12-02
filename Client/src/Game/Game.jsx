@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from "react";
+import { useNavigate } from 'react-router-dom';
 import "./Game.css";
 import Square from "../Square/Square.jsx";
 import {io} from "socket.io-client";
@@ -12,6 +13,7 @@ const renderFrom = [
 ];
 
 const Game = () => {
+    const navigate = useNavigate();
     // const ip = window.location.hostname;
     const ip = "localhost";
     const [gameState, setGameState] = useState(JSON.parse(JSON.stringify(renderFrom)));
@@ -25,6 +27,10 @@ const Game = () => {
     const [opponentName, setOpponentName] = useState(null);
     const [playingAs, setPlayingAs] = useState(null);
     const [newGame, setNewGame] = useState(false);
+
+    const handleResults = () => {
+        navigate('/results');
+    };
 
     const checkWinner = () => {
         // row dynamic
@@ -179,6 +185,9 @@ const Game = () => {
                 <button onClick={playOnlineClick} className="clickButton">
                     Play Tic-tac-toe
                 </button>
+                <button onClick={handleResults} className="clickButton">
+                    View results
+                </button>
             </div>
         );
     }
@@ -186,7 +195,7 @@ const Game = () => {
     if (playOnline && !opponentName) {
         return (
             <div className="waiting">
-                <p>Waiting for opponent</p>
+            <p>Waiting for opponent</p>
             </div>
         );
     }
