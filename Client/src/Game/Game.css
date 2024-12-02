@@ -55,7 +55,9 @@
 .left,
 .right {
   height: 30px;
-  width: 120px;
+  width: 150px;
+  min-width: 160px;
+  display: inline-block;
   background-color: red;
   border-bottom-left-radius: 50px;
   background-color: #4b495f;

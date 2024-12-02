@@ -94,7 +94,7 @@ const Game = () => {
                 socket.emit("results", {
                     result: {
                         playerName: playerName,
-                        result: winner === playingAs ? 0 : 1,
+                        result: winner === playingAs ? 1 : 0,
                     },
                 });
             }
