@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import {getUsername} from "../Login/Auth.jsx";
+import './Results.css';
 
 const Results = () => {
     const [data, setData] = useState([]);
