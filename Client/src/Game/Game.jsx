@@ -32,6 +32,11 @@ const Game = () => {
         navigate('/results');
     };
 
+    const handleLogout = () => {
+        localStorage.clear();
+        navigate('/');
+    }
+
     const checkWinner = () => {
         // row dynamic
         for (let row = 0; row < gameState.length; row++) {
@@ -196,6 +201,9 @@ const Game = () => {
                 </button>
                 <button onClick={handleResults} className="clickButton">
                     View results
+                </button>
+                <button onClick={handleLogout} className="clickButton">
+                    Logout
                 </button>
             </div>
         );

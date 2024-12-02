@@ -10,12 +10,16 @@
   font-weight: 700;
   border: none;
   background-color: #e4ca56;
-  font-size: 60px;
+  font-size: 40px;
   cursor: pointer;
-  margin-top: 20vh;
+  margin: 5vh 0;
   padding: 6px 10px;
   border-radius: 5px;
   outline: none;
+}
+
+.clickButton:first-of-type {
+  margin-top: 20vh
 }
 
 .water-background {
