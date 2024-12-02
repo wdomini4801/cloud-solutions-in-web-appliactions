@@ -1,9 +1,9 @@
 import React, {useState, useEffect} from "react";
 import "./Game.css";
-import Square from "./Square/Square";
+import Square from "../Square/Square.jsx";
 import {io} from "socket.io-client";
 import Swal from "sweetalert2";
-import {getUsername, isTokenExpired, refreshToken} from "./Auth.jsx";
+import {getUsername, isTokenExpired, refreshToken} from "../Login/Auth.jsx";
 
 const renderFrom = [
     [1, 2, 3],

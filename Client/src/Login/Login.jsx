@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import axios from 'axios';
+import './Login.css';
 
 import {useSearchParams} from "react-router-dom";
 
@@ -50,6 +51,7 @@ const Login = () => {
             window.localStorage.setItem('id_token', data.data.id_token);
             window.localStorage.setItem('expires_in', data.data.expires_in);
             window.localStorage.setItem('token_type', data.data.token_type);
+            window.location.href = '/login';
         }
     }
 };
