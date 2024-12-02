@@ -46,7 +46,7 @@ const saveGameResult = (result) => {
 async function _getResultsForPlayer(playerName) {
     const selectQuery = `
       SELECT * FROM GameResults
---       WHERE Player1 = ?`;
+      WHERE Player1 = ?`;
     const values = [playerName];
 
     return new Promise((resolve, reject) => {
@@ -65,12 +65,15 @@ const getResultsForPlayer = async (playerName) => {
     try {
         const results = await _getResultsForPlayer(playerName);
         console.log(JSON.stringify(results)); // Log results as JSON
-        for(let i=0; i<results.length; i++){
-            if(results[i].Result ==="1"){
-                results[i].Result = "Win"
+        for(let i= 0; i < results.length; i++) {
+            if(results[i].Result === "1") {
+                results[i].Result = "Win";
             }
-            else if(results[i].Result ==="0"){
-                results[i].Result = "Lose"
+            else if(results[i].Result === "0") {
+                results[i].Result = "Lose";
+            }
+            else {
+                results[i].Result = "Draw";
             }
         }
         return results;

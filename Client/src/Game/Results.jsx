@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
-import {getUsername} from "./Auth.jsx";
+import Swal from "sweetalert2";
+import {getUsername} from "../Login/Auth.jsx";
 
 const Results = () => {
     const [data, setData] = useState([]);
@@ -10,15 +11,26 @@ const Results = () => {
         // const server_port = import.meta.env.VITE_SERVER_PORT;
         const url = `http://${window.location.hostname}:${server_port}/results`;
         const accessToken = localStorage.getItem("access_token");
-        axios.get(url,{params : {username: getUsername()},headers:{Authorization: accessToken}})
-            .then(response => {
-                setData(response.data.data);
-                console.log(response.data.data);
-            })
-            .catch(error => {
-                console.log(error);
+
+        if(!accessToken) {
+            Swal.fire({
+                title: "You need to log in first",
+                icon: "error",
             });
+            document.location.href = "/login";
+        }
+        else {
+            axios.get(url,{params : {player: getUsername()},headers:{Authorization: accessToken}})
+                .then(response => {
+                    setData(response.data.data);
+                    console.log(response.data.data);
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        }
     };
+
     useEffect(() => {
         loadData();
     },[]);
