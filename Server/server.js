@@ -13,7 +13,6 @@ const app = express();
 
 function getIp(){
   const data = fetch('https://api.ipify.org?format=json').json();
-  console.log(data);
   return data.ip;
 }
 
@@ -56,7 +55,6 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 app.get('/exchange-code', (req, res) => {
-  console.log("reached endpoint");
   let auth_code = req.query.auth_code;
   exchange_code(auth_code).then((data) => {res.status(200).json({ data })}).catch(
       res => res.status(400).json({ error: res.message })

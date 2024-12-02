@@ -58,20 +58,14 @@ function validateToken(token) {
 async function postData(url, data, headers) {
     try {
         const response= await post(url, data, { headers: headers });
-        console.log("OK");
         return response.data;
     } catch (error) {
-        console.log("ERROR - postData");
-        console.log(url);
-        console.log(data);
-        console.log(headers);
         // Optional: re-throw the error to handle it further up the call stack
     }
 }
 
 function getIp(){
     const data = fetch('https://api.ipify.org?format=json').json();
-    console.log(data);
     return data.ip;
 }
 

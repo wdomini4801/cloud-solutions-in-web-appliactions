@@ -6,11 +6,9 @@ import Login from './Login/Login.jsx';
 const LoginWrapper = () => {
     const accessToken = localStorage.getItem("access_token");
     if (!accessToken) {
-        console.log("No access token")
         return <Login />;
     }
     else {
-        console.log("access token")
         return <Game />;
     }
 };

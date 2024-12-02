@@ -88,7 +88,6 @@ const Game = () => {
                 result: finishedState === playingAs ? 0 : 1,
             },
         });
-        console.log("Sending result to server");
     }
 
     socket?.on("opponentLeftMatch", () => {

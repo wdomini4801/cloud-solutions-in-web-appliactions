@@ -53,7 +53,6 @@ const Login = () => {
             axios.get(url, { params })
                 .then(response => {
                     setData(response.data);
-                    console.log(response.data);
                 })
                 .catch(error => {
                     setError(error);
