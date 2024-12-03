@@ -50,14 +50,36 @@
     - name: Write .env file
       copy:
         content: |
-          VITE_IP="{{ ansible_ssh_host }}"
+          VITE_DEPLOYMENT_TYPE="remote"
+          VITE_CLIENT_PORT=443
+          VITE_SERVER_PORT=3000
+          VITE_CLIENT_ID="3g1kiuq5c9n7hkpjc0m59h1dd6"
         dest: /home/cloud/.env
         
     - name: Write .env file for client
       copy:
         content: |
-          VITE_IP="{{ ansible_ssh_host }}"
+          VITE_DEPLOYMENT_TYPE="remote"
+          VITE_CLIENT_PORT=443
+          VITE_SERVER_PORT=3000
+          VITE_CLIENT_ID="3g1kiuq5c9n7hkpjc0m59h1dd6"
         dest: /home/cloud/Client/.env
+        
+    - name: Copy cert.pem
+      copy:
+        src: ~/environment/cert.pem
+        dest: /home/cloud/cert.pem
+        owner: ubuntu
+        group: ubuntu
+        mode: '0400'
+        
+    - name: Copy key.pem
+      copy:
+        src: ~/environment/key.pem
+        dest: /home/cloud/key.pem
+        owner: ubuntu
+        group: ubuntu
+        mode: '0400'
         
     - name: Start app
       command: docker compose up -d
