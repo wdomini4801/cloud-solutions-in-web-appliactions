@@ -1,5 +1,5 @@
 ---
-- hosts: app
+- hosts: backend
   become: true
   tasks:
     - name: Install necessary dependencies
@@ -82,7 +82,7 @@
         mode: '0400'
         
     - name: Start app
-      command: docker compose up -d
+      command: docker compose up -d backend
       args:
         chdir: /home/cloud
         
