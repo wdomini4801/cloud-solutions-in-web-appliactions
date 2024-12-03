@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const { createServer } = require('http');
+const { createServer } = require('https');
 const { Server } = require('socket.io');
 const cors = require('cors');
 const {validateToken} = require("./auth");
@@ -17,17 +17,18 @@ function getIp(){
   return data.ip;
 }
 
-let ip = "localhost";
-// if (process.env.VITE_DEPLOYMENT_TYPE === "local") {
-//   ip = "localhost";
-// }
-//
-// else if(process.env.VITE_DEPLOYMENT_TYPE === "remote") {
-//   ip = getIp();
-// }
+let ip = "";
 
-// let port = process.env.VITE_CLIENT_PORT;
-let port = "5173";
+if (process.env.VITE_DEPLOYMENT_TYPE === "local") {
+  ip = "localhost";
+}
+
+else if(process.env.VITE_DEPLOYMENT_TYPE === "remote") {
+  ip = getIp();
+}
+
+let port = process.env.VITE_CLIENT_PORT;
+// let port = "5173";
 let origin = "";
 
 if (port === "80") {
@@ -65,15 +66,14 @@ app.get('/results', (req, res) => {
   getResultsForPlayer(player).then((data) => {res.status(200).json({ data })});
 });
 
-// const privateKey = readFileSync('../key.pem');
-// const certificate = readFileSync('../cert.pem');
+const privateKey = readFileSync('key.pem');
+const certificate = readFileSync('cert.pem');
 
-// Create HTTP server
-// const httpsServer = createServer({
-//   key: privateKey,
-//   cert: certificate
-// }, app);
-const httpsServer = createServer(app);
+const httpsServer = createServer({
+  key: privateKey,
+  cert: certificate
+}, app);
+// const httpsServer = createServer(app);
 
 httpsServer.listen(3000);
 

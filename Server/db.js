@@ -64,7 +64,7 @@ async function _getResultsForPlayer(playerName) {
 const getResultsForPlayer = async (playerName) => {
     try {
         const results = await _getResultsForPlayer(playerName);
-        console.log(JSON.stringify(results)); // Log results as JSON
+        console.log(JSON.stringify(results));
         for(let i= 0; i < results.length; i++) {
             if(results[i].Result === "1") {
                 results[i].Result = "Win";

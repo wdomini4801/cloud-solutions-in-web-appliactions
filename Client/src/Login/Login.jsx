@@ -11,7 +11,10 @@ const Login = () => {
     const [data, setData] = useState(null);
     const [error, setError] = useState(null);
 
-    const client_port = "5173";
+    // const client_port = "5173";
+    // const server_port = "3000";
+    const client_port = import.meta.env.VITE_CLIENT_PORT;
+    const server_port = import.meta.env.VITE_SERVER_PORT;
 
     const handleSubmit = async (e) => {
         let redirect_uri;
@@ -46,9 +49,7 @@ const Login = () => {
             const params = {
                 auth_code: authCode,
             };
-            // const server_port = import.meta.env.VITE_SERVER_PORT;
-            const server_port = "3000";
-            const url = 'http://'+window.location.hostname+':'+server_port+'/exchange-code';
+            const url = 'https://'+window.location.hostname+':'+server_port+'/exchange-code';
 
             axios.get(url, { params })
                 .then(response => {

@@ -69,21 +69,21 @@ function getIp(){
     return data.ip;
 }
 
-let ip = "localhost"
+let ip = "";
 
-// if(process.env.VITE_DEPLOYMENT_TYPE === "local") {
-//     ip = "localhost";
-// }
-// else if(process.env.VITE_DEPLOYMENT_TYPE === "remote") {
-//     ip = getIp();
-// }
+if(process.env.VITE_DEPLOYMENT_TYPE === "local") {
+    ip = "localhost";
+}
+else if(process.env.VITE_DEPLOYMENT_TYPE === "remote") {
+    ip = getIp();
+}
 
 async function exchange_code(code) {
     const url = "https://us-east-1kius0fmq0.auth.us-east-1.amazoncognito.com/oauth2/token";
-    // const client_id = process.env.VITE_CLIENT_ID;
-    // const port = process.env.VITE_CLIENT_PORT;
-    const client_id = "3g1kiuq5c9n7hkpjc0m59h1dd6";
-    const port = "5173";
+    const client_id = process.env.VITE_CLIENT_ID;
+    const port = process.env.VITE_CLIENT_PORT;
+    // const client_id = "3g1kiuq5c9n7hkpjc0m59h1dd6";
+    // const port = "5173";
     let redirect_uri= "";
 
     if(port === "80") {

@@ -8,9 +8,9 @@ const Results = () => {
     const [data, setData] = useState([]);
 
     const loadData = () => {
-        const server_port = "3000";
-        // const server_port = import.meta.env.VITE_SERVER_PORT;
-        const url = `http://${window.location.hostname}:${server_port}/results`;
+        // const server_port = "3000";
+        const server_port = import.meta.env.VITE_SERVER_PORT;
+        const url = `https://${window.location.hostname}:${server_port}/results`;
         const accessToken = localStorage.getItem("access_token");
 
         if(!accessToken) {
