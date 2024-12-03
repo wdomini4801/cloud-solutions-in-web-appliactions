@@ -47,6 +47,30 @@
         clone: yes
         update: yes
         
+    - name: Read file with private ips
+      set_fact:
+        private_ips: "{{ lookup('file', '/home/ec2-user/environment/cloud-solutions-in-web-appliactions/Terraform/private-ips.txt') }}"
+        
+    - name: Split private_ip lines
+      set_fact:
+        backend_lines: "{{ private_ips.split('\n') }}"
+    
+    - name: Read file with public ips
+      set_fact:
+        public_ips: "{{ lookup('file', '/home/ec2-user/environment/cloud-solutions-in-web-appliactions/Terraform/inventory.ini') }}"
+        
+    - name: Split public_ip lines
+      set_fact:
+        frontend_lines: "{{ public_ips.split('\n') }}"
+        
+    - name: Extract backend IP
+      set_fact:
+        backend_ip: "{{ (backend_lines[ (backend_lines.index('[backend]') + 1) : ] | first | regex_replace('\\[backend\\]\\s*', '')).strip() }}"
+    
+    - name: Extract frontend IP
+      set_fact:
+        frontend_ip: "{{ (frontend_lines[ (frontend_lines.index('[frontend]') + 1) : ] | first | regex_replace('\\[frontend\\]\\s*', '')).strip() }}"
+        
     - name: Write .env file
       copy:
         content: |
@@ -54,8 +78,10 @@
           VITE_CLIENT_PORT=443
           VITE_SERVER_PORT=3000
           VITE_CLIENT_ID="3g1kiuq5c9n7hkpjc0m59h1dd6"
+          VITE_SERVER_IP={{ backend_ip }}
+          VITE_CLIENT_IP={{ frontend_ip }}
         dest: /home/cloud/.env
-        
+    
     - name: Write .env file for client
       copy:
         content: |
@@ -63,6 +89,8 @@
           VITE_CLIENT_PORT=443
           VITE_SERVER_PORT=3000
           VITE_CLIENT_ID="3g1kiuq5c9n7hkpjc0m59h1dd6"
+          VITE_SERVER_IP={{ backend_ip }}
+          VITE_CLIENT_IP={{ frontend_ip }}
         dest: /home/cloud/Client/.env
         
     - name: Copy cert.pem

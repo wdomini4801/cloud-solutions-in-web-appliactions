@@ -142,6 +142,20 @@ resource "null_resource" "backend_inventory" {
   }
 }
 
+# Konfiguracja pliku z prywatnymi adresami IP
+resource "null_resource" "append_backend_private_ip" {
+  provisioner "local-exec" {
+    command = <<EOT
+      echo "[backend]" >> ./private-ips.txt
+      echo "${aws_instance.backend_instance.private_ip}" >> ./private-ips.txt
+    EOT
+  }
+
+  triggers = {
+    instance_ip = aws_instance.backend_instance.private_ip
+  }
+}
+
 # Uruchomienie procesu konfiguracji instancji z użyciem Ansible
 resource "terraform_data" "ansible_backend_provisioner" {
   provisioner "local-exec" {
@@ -245,6 +259,20 @@ resource "null_resource" "frontend_inventory" {
 
   triggers = {
     instance_ip = aws_instance.frontend_instance.public_ip
+  }
+}
+
+# Konfiguracja pliku z prywatnymi adresami IP
+resource "null_resource" "append_frontend_private_ip" {
+  provisioner "local-exec" {
+    command = <<EOT
+      echo "[frontend]" >> ./private-ips.txt
+      echo "${aws_instance.frontend_instance.private_ip}" >> ./private-ips.txt
+    EOT
+  }
+
+  triggers = {
+    instance_ip = aws_instance.frontend_instance.private_ip
   }
 }
 
