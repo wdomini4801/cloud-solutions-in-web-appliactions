@@ -24,7 +24,7 @@ if (process.env.VITE_DEPLOYMENT_TYPE === "local") {
 }
 
 else if(process.env.VITE_DEPLOYMENT_TYPE === "remote") {
-  ip = getIp();
+  ip = process.env.VITE_CLIENT_IP;
 }
 
 let port = process.env.VITE_CLIENT_PORT;

@@ -8,7 +8,7 @@ function getUsername() {
 
 function isTokenExpired() {
     const decodedToken = jwtDecode(window.localStorage.getItem("access_token"));
-    const currentTime = Math.floor(Date.now() / 1000); // W sekundach
+    const currentTime = Math.floor(Date.now() / 1000);
     return decodedToken.exp < currentTime;
 }
 

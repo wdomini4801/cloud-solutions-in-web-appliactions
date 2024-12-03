@@ -75,7 +75,7 @@ if(process.env.VITE_DEPLOYMENT_TYPE === "local") {
     ip = "localhost";
 }
 else if(process.env.VITE_DEPLOYMENT_TYPE === "remote") {
-    ip = getIp();
+    ip = process.env.VITE_CLIENT_IP;
 }
 
 async function exchange_code(code) {
