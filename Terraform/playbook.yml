@@ -46,6 +46,7 @@
         dest: /home/cloud
         clone: yes
         update: yes
+        version: one-ec2
         
     - name: Write .env file
       copy:
