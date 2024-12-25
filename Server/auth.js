@@ -52,15 +52,16 @@ function validateToken(token) {
     token = token.split(' ')[1];
     const header = decodeTokenHeader(token);
     const jsonWebKey = getJsonWebKeyWithKID(header.kid);
-    return verifyJsonWebTokenSignature(token, jsonWebKey);s
+    return verifyJsonWebTokenSignature(token, jsonWebKey);
 }
 
 async function postData(url, data, headers) {
     try {
-        const response= await post(url, data, { headers: headers });
+        const response = await post(url, data, { headers: headers });
+        console.log("postData reached");
         return response.data;
     } catch (error) {
-        // Optional: re-throw the error to handle it further up the call stack
+        console.log(error.message);
     }
 }
 
@@ -82,6 +83,9 @@ async function exchange_code(code) {
     const url = "https://us-east-1kius0fmq0.auth.us-east-1.amazoncognito.com/oauth2/token";
     const client_id = process.env.VITE_CLIENT_ID;
     const port = process.env.VITE_CLIENT_PORT;
+    
+    console.log("Client id: " + client_id);
+    console.log("Port: " + port);
     // const client_id = "3g1kiuq5c9n7hkpjc0m59h1dd6";
     // const port = "5173";
     let redirect_uri= "";
@@ -97,6 +101,8 @@ async function exchange_code(code) {
     else {
         redirect_uri = "http://"+ip+":"+port+"/login";
     }
+    
+    console.log("Redirect uri: " + redirect_uri);
 
     const headers = {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -109,6 +115,8 @@ async function exchange_code(code) {
         redirect_uri: redirect_uri,
     };
     try {
+        console.log("data: " + data);
+        console.log("headers: " + headers);
         return await postData(url, data, headers);
     } catch (error) {
         console.log("ERROR - exchange code auth");
