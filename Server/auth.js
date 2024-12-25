@@ -59,6 +59,7 @@ async function postData(url, data, headers) {
     try {
         const response = await post(url, data, { headers: headers });
         console.log("postData reached");
+        console.log(response.data);
         return response.data;
     } catch (error) {
         console.log(error.message);
