@@ -15,6 +15,7 @@ const renderFrom = [
 const Game = () => {
     const navigate = useNavigate();
     const server_ip = import.meta.env.VITE_SERVER_IP;
+    const server_port = import.meta.env.VITE_SERVER_PORT;
     // const ip = "localhost";
     const [gameState, setGameState] = useState(JSON.parse(JSON.stringify(renderFrom)));
     const [currentPlayer, setCurrentPlayer] = useState("circle");
@@ -148,7 +149,7 @@ const Game = () => {
             "Authorization": `Bearer ${window.localStorage.getItem("access_token")}`
         }
 
-        const newSocket = io("https://"+server_ip+":3000", {
+        const newSocket = io("https://"+server_ip+":"+server_port+"/socket.io", {
             autoConnect: true,
             extraHeaders: headers
         });

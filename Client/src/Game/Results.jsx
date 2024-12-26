@@ -9,9 +9,9 @@ const Results = () => {
 
     const loadData = () => {
         // const server_port = "3000";
-        const server_ip = import.meta.env.VITE_SERVER_IP;
-        const server_port = import.meta.env.VITE_SERVER_PORT;
-        const url = `https://${server_ip}:${server_port}/results`;
+        // const server_ip = import.meta.env.VITE_SERVER_IP;
+        // const server_port = import.meta.env.VITE_SERVER_PORT;
+        const url = `/api/results`;
         const accessToken = localStorage.getItem("access_token");
 
         if(!accessToken) {
@@ -28,7 +28,7 @@ const Results = () => {
                     console.log(response.data.data);
                 })
                 .catch(error => {
-                    console.log(error);
+                    console.error(error);
                 });
         }
     };

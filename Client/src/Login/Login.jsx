@@ -50,7 +50,7 @@ const Login = () => {
             const params = {
                 auth_code: authCode,
             };
-            const url = 'https://'+server_ip+':'+server_port+'/exchange-code';
+            const url = '/api/exchange-code';
             console.error(url);
 
             axios.get(url, { params })
