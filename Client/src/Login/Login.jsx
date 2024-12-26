@@ -51,13 +51,16 @@ const Login = () => {
                 auth_code: authCode,
             };
             const url = 'https://'+server_ip+':'+server_port+'/exchange-code';
+            console.error(url);
 
             axios.get(url, { params })
                 .then(response => {
                     setData(response.data);
+                    console.error(response.data);
                 })
                 .catch(error => {
                     setError(error);
+                    console.error(error.message);
                 });
         }, []);
 

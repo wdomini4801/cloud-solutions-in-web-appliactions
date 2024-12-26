@@ -65,7 +65,7 @@
         
     - name: Extract backend IP
       set_fact:
-        backend_ip: "{{ (backend_lines[ (backend_lines.index('[backend]') + 1) : ] | first | regex_replace('\\[backend\\]\\s*', '')).strip() }}"
+        backend_ip: "{{ (frontend_lines[ (frontend_lines.index('[backend]') + 1) : ] | first | regex_replace('\\[backend\\]\\s*', '')).strip() }}"
     
     - name: Extract frontend IP
       set_fact:
