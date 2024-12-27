@@ -11,7 +11,7 @@ const Results = () => {
         // const server_port = "3000";
         // const server_ip = import.meta.env.VITE_SERVER_IP;
         // const server_port = import.meta.env.VITE_SERVER_PORT;
-        const url = `/api/results`;
+        const url = '/api/results';
         const accessToken = localStorage.getItem("access_token");
 
         if(!accessToken) {
