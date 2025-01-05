@@ -149,9 +149,9 @@ const Game = () => {
             "Authorization": `Bearer ${window.localStorage.getItem("access_token")}`
         };
 
-        const newSocket = io("wss://" + server_ip + ":" + server_port, {
+        const newSocket = io("/socket.io", {
             autoConnect: true,
-            extraHeaders: headers
+            extraHeaders: headers,
         });
 
         newSocket?.emit("request_to_play", {
