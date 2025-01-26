@@ -10,10 +10,11 @@ services:
     networks:
       - mynetwork
     environment:
-      - VITE_DEPLOYMENT_TYPE="remote"
-      - VITE_CLIENT_PORT=443
-      - VITE_SERVER_PORT=3000
-      - VITE_CLIENT_ID="3g1kiuq5c9n7hkpjc0m59h1dd6"
+      - VITE_DEPLOYMENT_TYPE=${VITE_DEPLOYMENT_TYPE}
+      - VITE_CLIENT_PORT=${VITE_CLIENT_PORT}
+      - VITE_CLIENT_ID=${VITE_CLIENT_ID}
+    env_file:
+      - path: .env
   frontend:
     container_name: frontend
     build: ./Client
@@ -21,10 +22,8 @@ services:
       - ./cert.pem:/etc/nginx/certs/ssl_certificate.crt
       - ./key.pem:/etc/nginx/certs/ssl_certificate.key
     environment:
-      - VITE_DEPLOYMENT_TYPE="remote"
-      - VITE_CLIENT_PORT=443
-      - VITE_SERVER_PORT=3000
-      - VITE_CLIENT_ID="3g1kiuq5c9n7hkpjc0m59h1dd6"
+      - VITE_SERVER_PORT=${VITE_SERVER_PORT}
+      - VITE_CLIENT_ID=${VITE_CLIENT_ID}
     ports:
       - "443:443"
     networks:
