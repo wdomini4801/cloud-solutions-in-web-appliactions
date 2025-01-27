@@ -24,6 +24,7 @@ services:
     environment:
       - VITE_SERVER_PORT=${VITE_SERVER_PORT}
       - VITE_CLIENT_ID=${VITE_CLIENT_ID}
+      - VITE_CLIENT_IP=${VITE_CLIENT_IP}
     ports:
       - "443:443"
     networks:

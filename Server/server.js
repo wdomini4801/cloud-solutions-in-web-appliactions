@@ -12,19 +12,10 @@ const {saveGameResult, getResultsForPlayer} = require("./db");
 // Create an Express application
 const app = express();
 
-function getIp(){
-  const data = fetch('https://api.ipify.org?format=json').json();
-  return data.ip;
-}
-
-let ip = "";
+let ip = process.env.VITE_CLIENT_IP;
 
 if (process.env.VITE_DEPLOYMENT_TYPE === "local") {
   ip = "localhost";
-}
-
-else if(process.env.VITE_DEPLOYMENT_TYPE === "remote") {
-  ip = getIp();
 }
 
 let port = process.env.VITE_CLIENT_PORT;
@@ -100,6 +91,7 @@ io.on("connection", (socket) => {
   allUsers[socket.id] = {
     socket: socket,
     online: true,
+    waitingForMove: false,
   };
 
   socket.on("request_to_play", (data) => {
@@ -127,6 +119,9 @@ io.on("connection", (socket) => {
       currentUser.playing = true;
       opponentPlayer.playing = true;
 
+      currentUser.waitingForMove = true;
+      opponentPlayer.waitingForMove = false;
+
       currentUser.socket.emit("OpponentFound", {
         opponentName: opponentPlayer.playerName,
         playingAs: "circle",
@@ -138,15 +133,25 @@ io.on("connection", (socket) => {
       });
 
       currentUser.socket.on("playerMoveFromClient", (data) => {
-        opponentPlayer.socket.emit("playerMoveFromServer", {
-          ...data,
-        });
+        if (currentUser.waitingForMove) {
+          opponentPlayer.socket.emit("playerMoveFromServer", {
+            ...data,
+          });
+
+          currentUser.waitingForMove = false;
+          opponentPlayer.waitingForMove = true;
+        }
       });
 
       opponentPlayer.socket.on("playerMoveFromClient", (data) => {
-        currentUser.socket.emit("playerMoveFromServer", {
-          ...data,
-        });
+        if (opponentPlayer.waitingForMove) {
+          currentUser.socket.emit("playerMoveFromServer", {
+            ...data,
+          });
+
+          opponentPlayer.waitingForMove = false;
+          currentUser.waitingForMove = true;
+        }
       });
     }
     else {

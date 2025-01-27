@@ -52,7 +52,7 @@ function validateToken(token) {
     token = token.split(' ')[1];
     const header = decodeTokenHeader(token);
     const jsonWebKey = getJsonWebKeyWithKID(header.kid);
-    return verifyJsonWebTokenSignature(token, jsonWebKey);s
+    return verifyJsonWebTokenSignature(token, jsonWebKey);
 }
 
 async function postData(url, data, headers) {
@@ -64,18 +64,10 @@ async function postData(url, data, headers) {
     }
 }
 
-function getIp(){
-    const data = fetch('https://api.ipify.org?format=json').json();
-    return data.ip;
-}
+let ip = process.env.VITE_CLIENT_IP;
 
-let ip = "";
-
-if(process.env.VITE_DEPLOYMENT_TYPE === "local") {
-    ip = "localhost";
-}
-else if(process.env.VITE_DEPLOYMENT_TYPE === "remote") {
-    ip = getIp();
+if (process.env.VITE_DEPLOYMENT_TYPE === "local") {
+  ip = "localhost";
 }
 
 async function exchange_code(code) {
