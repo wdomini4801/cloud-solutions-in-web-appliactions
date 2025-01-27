@@ -49,21 +49,21 @@ const QUEUE_URL = 'https://sqs.us-east-1.amazonaws.com/801415982270/websocket-me
 const sqsClient = new SQSClient({ 
     region: "us-east-1",
     credentials: {
-        accessKeyId: "ASIA3VGA5NS7GPLN3U3U",
-        secretAccessKey: "KHeE7v2pLenOvxFCK3PEXWOtWwPb4vyXs/sFlgIh",
-        sessionToken: "IQoJb3JpZ2luX2VjEFkaCXVzLXdlc3QtMiJHMEUCIQCXd\
-        WgI6euGxYDHeRYBoqradqzUcJZbw6d16ICFSuqzSwIgC+PclPoVg1jiqDtPQ\
-        qW/sntR23i4AcpjUW8G2TyR5M0qqwIIYhABGgw4MDE0MTU5ODIyNzAiDPU55\
-        hct8y0CZ3EWKiqIAjyMvsbNaHWwtjBOgP95ILMdpvnDlVjno/AmrjBGxnGW0\
-        XoYohq1C2PuT8VzTJegPIjEUIR88o8G6MlnAMIxi+aRuBa/HhOcTjOu006nQ\
-        sOg0OoUyGMwkikD715R/mQ8S1v+sHTv93C/smzV5wAFw0Ha1xXb9U8ufqsjb\
-        0nBgBbBHtcd3gBWJfVq6lCmeydpzRJxtQ17QTNk0zvqqiioBI3GquiDxnLa5\
-        8rbjiNSqixbnfTZ4E+YYbGz1E/yS2fPf8bhW9VEQP2wrXwaxwZIQVtjWVkJM\
-        mpyz2IGkWvKc/SzH3Gqp0zmtAXQQ/a07hdXvydDNdY0lKMvcFPEF9JCtw18m\
-        Nv40Ai8ajDa7d68BjqdAXZW2iN1wN2gTKSpmcZ67qz85ZtkFfAt4y7DOicr3\
-        Mf3l2Iqk8fgkAGQimFTn7UFfcguwV07V6EqMFyqcZ+V394qsec5wTm0cxUkX\
-        VdDYpJXY8vcHcbWnFjnVyZILZqzyKbu/sfpEN3ISZLHtQ+zbJuZ6Gb2lbYbl\
-        R8hteK1ohgbTIYB1ujhZq4srFDuVJuwu0pudSj25zB2Xvstgx0="
+        accessKeyId: "ASIA3VGA5NS7ACYVVZP5",
+        secretAccessKey: "w7C1tL4oIkDsAoow6ELx56SDdMbvS+67kY+KKYH2",
+        sessionToken: "IQoJb3JpZ2luX2VjEF0aCXVzLXdlc3QtMiJGMEQCIAgni\
+        jRyh4qa7f1HoYchyXiBA2fe18c3rGjYn/HkhaETAiAx2/w0XBqxjPOu8IP5y\
+        WeYFPRulcFbD7zbFp9GFf2RWiqrAghmEAEaDDgwMTQxNTk4MjI3MCIMFjeYz\
+        VoagOZV0329KogCnvs+RdlBUBHD8IB7hF+EPkIhM0nEGuZtvS632ZzOiLIHY\
+        u9f9ECv8Dk1f5fcuE5ZrBPf4CKuWOe05d5QoC6Leg4NJyeC0tnL6+9sU7wdf\
+        eVdUsQHKTX3pXsmPQrCIQ/kTcMnHeLD80kyc9WdQh9O3sN+ciB9siafMaxM4\
+        Cd02lYzg1AgKbze3MHsgVd+ufTEgV+5BwdgtlE+LQ3hDuq5fdVu9IWkubyce\
+        G12g6lTnhG/jDdiiHkBvvXT3lWyf0O3a7ABjDMTDyd7IgQCv1bUa1nx+b2vu\
+        qiPby9jGiVF4dnTqAQz9V68d+X6uXvkKg70qAT0dg38k/l/th1BppPAhxyqS\
+        NP8ChiQMO/l37wGOp4ByczD9eIcVPDP52jXxsqghk3M4UpmE7hf+WkBG39Ed\
+        4hFJ9GqOVu6ffNclzmyKASW47I/awvz5orJZHgikd6QrP635G2fF4p80FgwZ\
+        GtF2Mz1wlh8WOG7AAc4QTYW9J43qR7J/ev66COmLWyG5af/ltXtSbDrz55GJ\
+        QYa2W+fNDiw60W2gGoDdasPcsYioNLsuspJGmQ2sD1g/BViOlc="
     }, 
 });
 
