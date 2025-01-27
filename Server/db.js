@@ -118,7 +118,7 @@ const getResultsForPlayer = async (playerName) => {
 const getMessagesForPlayer = async (playerName) => {
     try {
         const messages = await _getMessagesForPlayer(playerName);
-        console.log(JSON.stringify(results));
+        console.log(JSON.stringify(messages));
         return messages;
     }
     catch (error) {

@@ -3,6 +3,7 @@ import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import Game from './Game/Game.jsx';
 import Login from './Login/Login.jsx';
 import Results from "./Game/Results.jsx";
+import Messages from "./Game/Messages.jsx";
 
 const LoginWrapper = () => {
     const accessToken = localStorage.getItem("access_token");
@@ -22,6 +23,7 @@ const App = () => {
             <Route path="/login" element={<LoginWrapper/>} />
             <Route path="/game" element={<Game />} />
             <Route path="/results" element={<Results />} />
+            <Route path="/messages" element={<Messages />} />
         </Routes>
       </Router>
   );
