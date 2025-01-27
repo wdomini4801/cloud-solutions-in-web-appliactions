@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./Square.css";
 import { SQSClient, SendMessageCommand } from "@aws-sdk/client-sqs";
+import { sqsConfig } from "../sqsConfig";
 
 const circleSvg = (
     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -44,28 +45,9 @@ const crossSvg = (
     </svg>
 );
 
-const QUEUE_URL = 'https://sqs.us-east-1.amazonaws.com/801415982270/websocket-message-queue';
+const QUEUE_URL = import.meta.env.VITE_QUEUE_URL;
 
-const sqsClient = new SQSClient({ 
-    region: "us-east-1",
-    credentials: {
-        accessKeyId: "ASIA3VGA5NS7ACYVVZP5",
-        secretAccessKey: "w7C1tL4oIkDsAoow6ELx56SDdMbvS+67kY+KKYH2",
-        sessionToken: "IQoJb3JpZ2luX2VjEF0aCXVzLXdlc3QtMiJGMEQCIAgni\
-        jRyh4qa7f1HoYchyXiBA2fe18c3rGjYn/HkhaETAiAx2/w0XBqxjPOu8IP5y\
-        WeYFPRulcFbD7zbFp9GFf2RWiqrAghmEAEaDDgwMTQxNTk4MjI3MCIMFjeYz\
-        VoagOZV0329KogCnvs+RdlBUBHD8IB7hF+EPkIhM0nEGuZtvS632ZzOiLIHY\
-        u9f9ECv8Dk1f5fcuE5ZrBPf4CKuWOe05d5QoC6Leg4NJyeC0tnL6+9sU7wdf\
-        eVdUsQHKTX3pXsmPQrCIQ/kTcMnHeLD80kyc9WdQh9O3sN+ciB9siafMaxM4\
-        Cd02lYzg1AgKbze3MHsgVd+ufTEgV+5BwdgtlE+LQ3hDuq5fdVu9IWkubyce\
-        G12g6lTnhG/jDdiiHkBvvXT3lWyf0O3a7ABjDMTDyd7IgQCv1bUa1nx+b2vu\
-        qiPby9jGiVF4dnTqAQz9V68d+X6uXvkKg70qAT0dg38k/l/th1BppPAhxyqS\
-        NP8ChiQMO/l37wGOp4ByczD9eIcVPDP52jXxsqghk3M4UpmE7hf+WkBG39Ed\
-        4hFJ9GqOVu6ffNclzmyKASW47I/awvz5orJZHgikd6QrP635G2fF4p80FgwZ\
-        GtF2Mz1wlh8WOG7AAc4QTYW9J43qR7J/ev66COmLWyG5af/ltXtSbDrz55GJ\
-        QYa2W+fNDiw60W2gGoDdasPcsYioNLsuspJGmQ2sD1g/BViOlc="
-    }, 
-});
+const sqsClient = new SQSClient(sqsConfig);
 
 const sendMessageToSQS = async (messageBody) => {
     try {

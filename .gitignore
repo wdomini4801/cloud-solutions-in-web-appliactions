@@ -24,4 +24,4 @@ crash.*.log
 terraform.rc
 Terraform/*.hcl
 
-Client/sqsConfig.js
+Client/src/sqsConfig.js
