@@ -1,7 +1,5 @@
 import mysql from 'mysql2/promise';
-import util from 'util';
-
-const delay = util.promisify(setTimeout);
+import { setTimeout } from 'timers/promises';
 
 const dbConfig = {
     host: 'database-1.ckzm6c1fbrsp.us-east-1.rds.amazonaws.com',
@@ -10,29 +8,39 @@ const dbConfig = {
     database: 'resultsdb',
 };
 
+const saveMessage = async (username, message) => {
+  const connection = await mysql.createConnection(dbConfig);
+  try {
+      const query = 'INSERT INTO Messages (username, message) VALUES (?, ?)';
+      await connection.execute(query, [username, message]);
+  } catch (error) {
+      console.error('Błąd podczas zapisywania do bazy:', error);
+      throw error;
+  } finally {
+      await connection.end();
+  }
+};
+
 export const handler = async (event) => {
-    // TODO implement
-    const connection = await mysql.createConnection(dbConfig);
+    console.log('Rozpoczęcie przetwarzania wiadomości...');
 
-    console.log('Odebrano wiadomość:');
+    for (const record of event.Records) {
+      console.log('Przetwarzanie wiadomości:', record.body);
 
-    const query = 'INSERT INTO Messages (username, message) VALUES (?, ?)';
-    const values = ['admin', 'hello'];
+      await setTimeout(5000);
 
-    await delay(5000);
+      const messageBody = record.body;
 
-    try {
-      await connection.execute(query, values);
-      console.log('Wiadomość została zapisana w bazie danych.');
-    } catch (error) {
-        console.error('Błąd podczas zapisywania wiadomości:', error);
-    } finally {
-        await connection.end();
-    }
-
-    const response = {
-      statusCode: 200,
-      body: JSON.stringify('Gut!'),
-    };
-    return response;
+      if (messageBody.trim() === "result") {
+          try {
+              await saveMessage('admin', messageBody);
+              console.log(`Wiadomość zapisana: ${messageBody}`);
+          } catch (error) {
+              console.error(`Błąd podczas zapisywania wiadomości: ${messageBody}`, error);
+          }
+      } else {
+          console.log(`Wiadomość nie zawiera wyniku, pominięto: ${messageBody}`);
+      }
+  }
+  console.log('Zakończono przetwarzanie wiadomości.');
 };
