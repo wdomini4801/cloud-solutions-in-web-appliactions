@@ -50,7 +50,7 @@ const Messages = () => {
                 {data.map((item, index) => (
                     <tr key={index}>
                         <td>{item.username}</td>
-                        <td>{item.messaage}</td>
+                        <td>{item.message}</td>
                         <td>{new Date(item.timestamp).toLocaleString()}</td>
                     </tr>
                 ))}

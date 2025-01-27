@@ -169,11 +169,6 @@ const Game = () => {
     socket?.on("opponentLeftMatch", () => {
         if (!finishedStateRef.current) {
             setFinishedState("opponentLeftMatch");
-            sendMessageToSQS({
-                type: 'game_over',
-                result: 'opponent_left',
-                playerName: playerName,
-            });
         }
     });
 
