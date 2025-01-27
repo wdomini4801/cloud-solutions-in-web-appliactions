@@ -29,17 +29,17 @@ export const handler = async (event) => {
 
       await setTimeout(5000);
 
-      const messageBody = record.body;
+      const messageBody = JSON.parse(record.body);
 
-      if (messageBody.trim() === "result") {
+      if (messageBody.result) {
           try {
-              await saveMessage('admin', messageBody);
-              console.log(`Wiadomość zapisana: ${messageBody}`);
+              await saveMessage('admin', record.body);
+              console.log(`Wiadomość zapisana: ${record.body}`);
           } catch (error) {
-              console.error(`Błąd podczas zapisywania wiadomości: ${messageBody}`, error);
+              console.error(`Błąd podczas zapisywania wiadomości: ${record.body}`, error);
           }
       } else {
-          console.log(`Wiadomość nie zawiera wyniku, pominięto: ${messageBody}`);
+          console.log(`Wiadomość nie zawiera wyniku, pominięto: ${record.body}`);
       }
   }
   console.log('Zakończono przetwarzanie wiadomości.');
