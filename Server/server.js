@@ -7,7 +7,7 @@ const {validateToken} = require("./auth");
 const exchange_code = require('./auth').exchange_code;
 const fetch = require('sync-fetch')
 const { readFileSync} = require("fs");
-const {saveGameResult, getResultsForPlayer} = require("./db");
+const {saveGameResult, getResultsForPlayer, getMessagesForPlayer} = require("./db");
 
 // Create an Express application
 const app = express();
@@ -55,6 +55,11 @@ app.get('/exchange-code', (req, res) => {
 app.get('/results', (req, res) => {
   let player = req.query.player;
   getResultsForPlayer(player).then((data) => {res.status(200).json({ data })});
+});
+
+app.get('/messages', (req, res) => {
+  let player = req.query.player;
+  getMessagesForPlayer(player).then((data) => {res.status(200).json({ data })});
 });
 
 const privateKey = readFileSync('key.pem');

@@ -12,7 +12,7 @@ db.connect(function(err) {
     console.log("Connected!");
 });
 
-const createTableQuery = `
+const createResultsTableQuery = `
   CREATE TABLE IF NOT EXISTS GameResults (
     Player1 VARCHAR(50) NOT NULL,
     Result VARCHAR(50) NOT NULL,
@@ -20,12 +20,26 @@ const createTableQuery = `
   );
 `;
 
-db.query(createTableQuery, (err, results) => {
+const createMessagesTableQuery = `
+  CREATE TABLE IF NOT EXISTS Messages (
+    username VARCHAR(50) NOT NULL,
+    message TEXT NOT NULL,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  );
+`;
+
+db.query(createResultsTableQuery, (err, results) => {
     if (err) {
-        console.error('Error creating table:', err.stack);
+        console.error('Error creating table GameResults:', err.stack);
         return;
     }
-    console.log('Table created successfully');
+});
+
+db.query(createMessagesTableQuery, (err, results) => {
+    if (err) {
+        console.error('Error creating table Messages:', err.stack);
+        return;
+    }
 });
 
 const saveGameResult = (result) => {
@@ -39,7 +53,6 @@ const saveGameResult = (result) => {
             console.error('Error saving game result:', err.stack);
             return;
         }
-
     });
 };
 
@@ -47,6 +60,24 @@ async function _getResultsForPlayer(playerName) {
     const selectQuery = `
       SELECT * FROM GameResults
       WHERE Player1 = ?`;
+    const values = [playerName];
+
+    return new Promise((resolve, reject) => {
+        db.query(selectQuery, values, (err, results) => {
+            if (err) {
+                reject(err);
+            }
+            else {
+                resolve(results);
+            }
+        });
+    });
+}
+
+async function _getMessagesForPlayer(playerName) {
+    const selectQuery = `
+      SELECT * FROM Messages
+      WHERE username = ?`;
     const values = [playerName];
 
     return new Promise((resolve, reject) => {
@@ -84,7 +115,20 @@ const getResultsForPlayer = async (playerName) => {
     }
 };
 
+const getMessagesForPlayer = async (playerName) => {
+    try {
+        const messages = await _getMessagesForPlayer(playerName);
+        console.log(JSON.stringify(results));
+        return messages;
+    }
+    catch (error) {
+        console.error('Error fetching messages:', error);
+        throw error;
+    }
+};
+
 module.exports = {
     saveGameResult,
-    getResultsForPlayer
+    getResultsForPlayer,
+    getMessagesForPlayer
 }
