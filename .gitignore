@@ -27,3 +27,5 @@ Terraform/*.hcl
 Client/src/sqsConfig.js
 cert.pem
 key.pem
+.env
+Client/.env
