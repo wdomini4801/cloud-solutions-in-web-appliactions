@@ -34,20 +34,21 @@ const Game = () => {
     const sqsClient = new SQSClient({ 
         region: "us-east-1",
         credentials: {
-            accessKeyId: "ASIA3VGA5NS7KENOEID3",
-            secretAccessKey: "XEgnAwJQ0K0nny/q2FUPdb+zjM6TchfJkehad+L3",
-            sessionToken: "IQoJb3JpZ2luX2VjEEYaCXVzLXdlc3QtMiJIMEYCIQDTQ3H\
-            cfbKiY7LY2YRvPCySd590cxxW2b2nL5ZsIWhRowIhAK8Say5W4294uitf5GuSIX\
-            ApO8xniUj2cPFotRzFShmzKqsCCE8QARoMODAxNDE1OTgyMjcwIgyGDFzHh8bxqP\
-            NeqfYqiAKPwe/HR+Kdu4yRnZgMxaqIsapss5VePk7SIK+rnbqZrgjjXNJjkWlhbZc\
-            4mA87YhD5YXkRVNkzqMiTfXQWtaG/WwZEdTdaeOIZC87vNG8dJfEwN7Rb/NqzoovmY\
-            dr1BSEhMmBPGBk8tGSMmm2dJzWu58t9oi766ClLyZKSWKKxcsTSNmGrdw73OaQ5o+k\
-            HdRrZ4ONubtooyEurgWxB8YEs3FlflNIvxb/FaXK/WMB9Kn8eUXI75YUXfRTSiNfDxE\
-            gm9veA3aQ6IRdkSwinclT0K3bRQGZIiNcNKlSmFCnQLln2fB2c/fy1vV5I3SBiyJdrSJ\
-            rcQAxuRdTZrb7NC/cTAD64JKY+qL4wy+javAY6nAE9cCFaj/UxkAFOVF0hxEmCkIlb87\
-            SI5YOZ502XGlhSb6529YVKaK0mDTwtU/FbQ2zIC6TfYTiLjLDBsliyXQtQeM8e5iIRkp2\
-            TkT6vXZ7GpOSR0o9bgQvmlgXcT4EtR6YWvmJ6WCexYaN4o195J5c/vHOIwOvwU5sNGhtt\
-            cPwr8FJ2Nd/7EhE1XRfXCeEsxcVswUuv4dl/IC7eN20="
+            accessKeyId: "ASIA3VGA5NS7OEZ6KKMT",
+            secretAccessKey: "RfrZNOERzOGzqmRJLCP/qOKSNVzoqHbcNolw3msw",
+            sessionToken: "IQoJb3JpZ2luX2VjEFUaCXVzLXdlc3QtMiJHMEUCIAgfe\
+            +OFfOBVO31kdrfiJUD6F8YKUK0vNaGgSsPVRiXlAiEAqeKdABWfRyroE7RPIh\
+            lGjhI6hzXDl3068Mszmh9NiU8qqwIIXhABGgw4MDE0MTU5ODIyNzAiDNSOdC2v\
+            xRfjmO4g7yqIAtkBKa7kbgkZGFP37zZSHxuqUwpSAF64WeS9hUD9n2d8d7iv4w\
+            oKuy+5/cDjpdBgomZa/DJV1BucCYBhCvn7JeqMVO3L9wYSauIODovdq3sPUI8t\
+            zZqMVoYqbkeYPX+cJrDkOSlnn5dGg41UNIaHVmQwOCGljNhhcNH6GgORUNG7f5w\
+            zPG7JoFTsnd4e6x89ZNOXSXZWr+9U0tXHUqxu9p4nwddGQQwdHk33876MLTGvXT\
+            m6nKFlgThcww5RnpnHA93WJARcUoTuRrUMIgYkN+CYSs24V+Xx2Uc9xLfrPZfS4\
+            cM0SuyEJyPdNZiOsHhI9fwJ8l3WFF91TFMld670XZCl1YVw9KXbETDQhd68BjqdA\
+            eAk0WiTA0qgnjmU+1NumZ4M42zs1CU2BzNEIT8dl4jfjfDhIEFkUgXvOouHyeuvh\
+            21tXyHTsggNHPqcNytrIn5AQNzuyQ/1rzYW/AtwKYPbHggTeEJfmduty43S9SvpU\
+            udOn8siMKyLO2RM/uNxqh5Bj+NxNg19UMZIccdfk/seprf/BLdMaK+gUqAmMwj6l\
+            v0bg3kH4nFbbC3v5R0="
         }, 
     });
 
