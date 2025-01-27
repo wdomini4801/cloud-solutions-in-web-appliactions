@@ -1,10 +1,11 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useRef} from "react";
 import { useNavigate } from 'react-router-dom';
 import "./Game.css";
 import Square from "../Square/Square.jsx";
 import {io} from "socket.io-client";
 import Swal from "sweetalert2";
 import {getUsername, isTokenExpired, refreshToken} from "../Login/Auth.jsx";
+import { SQSClient, SendMessageCommand } from "@aws-sdk/client-sqs";
 
 const renderFrom = [
     [1, 2, 3],
@@ -15,7 +16,6 @@ const renderFrom = [
 const Game = () => {
     const navigate = useNavigate();
     const ip = window.location.hostname;
-    // const ip = "localhost";
     const [gameState, setGameState] = useState(JSON.parse(JSON.stringify(renderFrom)));
     const [currentPlayer, setCurrentPlayer] = useState("circle");
     const [finishedState, setFinishedState] = useState(false);
@@ -27,6 +27,33 @@ const Game = () => {
     const [opponentName, setOpponentName] = useState(null);
     const [playingAs, setPlayingAs] = useState(null);
     const [newGame, setNewGame] = useState(false);
+    const finishedStateRef = useRef(finishedState);
+
+    const QUEUE_URL = 'https://sqs.us-east-1.amazonaws.com/801415982270/websocket-message-queue';
+
+    const sqsClient = new SQSClient({ 
+        region: "us-east-1",
+        credentials: {
+            accessKeyId: "ASIA3VGA5NS7KENOEID3",
+            secretAccessKey: "XEgnAwJQ0K0nny/q2FUPdb+zjM6TchfJkehad+L3",
+            sessionToken: "IQoJb3JpZ2luX2VjEEYaCXVzLXdlc3QtMiJIMEYCIQDTQ3H\
+            cfbKiY7LY2YRvPCySd590cxxW2b2nL5ZsIWhRowIhAK8Say5W4294uitf5GuSIX\
+            ApO8xniUj2cPFotRzFShmzKqsCCE8QARoMODAxNDE1OTgyMjcwIgyGDFzHh8bxqP\
+            NeqfYqiAKPwe/HR+Kdu4yRnZgMxaqIsapss5VePk7SIK+rnbqZrgjjXNJjkWlhbZc\
+            4mA87YhD5YXkRVNkzqMiTfXQWtaG/WwZEdTdaeOIZC87vNG8dJfEwN7Rb/NqzoovmY\
+            dr1BSEhMmBPGBk8tGSMmm2dJzWu58t9oi766ClLyZKSWKKxcsTSNmGrdw73OaQ5o+k\
+            HdRrZ4ONubtooyEurgWxB8YEs3FlflNIvxb/FaXK/WMB9Kn8eUXI75YUXfRTSiNfDxE\
+            gm9veA3aQ6IRdkSwinclT0K3bRQGZIiNcNKlSmFCnQLln2fB2c/fy1vV5I3SBiyJdrSJ\
+            rcQAxuRdTZrb7NC/cTAD64JKY+qL4wy+javAY6nAE9cCFaj/UxkAFOVF0hxEmCkIlb87\
+            SI5YOZ502XGlhSb6529YVKaK0mDTwtU/FbQ2zIC6TfYTiLjLDBsliyXQtQeM8e5iIRkp2\
+            TkT6vXZ7GpOSR0o9bgQvmlgXcT4EtR6YWvmJ6WCexYaN4o195J5c/vHOIwOvwU5sNGhtt\
+            cPwr8FJ2Nd/7EhE1XRfXCeEsxcVswUuv4dl/IC7eN20="
+        }, 
+    });
+
+    useEffect(() => {
+        finishedStateRef.current = finishedState;
+    }, [finishedState]);
 
     const handleResults = () => {
         navigate('/results');
@@ -36,6 +63,20 @@ const Game = () => {
         localStorage.clear();
         navigate('/');
     }
+
+    const sendMessageToSQS = async (messageBody) => {
+        try {
+            const params = {
+                QueueUrl: QUEUE_URL,
+                MessageBody: JSON.stringify(messageBody),
+            };
+            const command = new SendMessageCommand(params);
+            const response = await sqsClient.send(command);
+            console.log("Message sent to SQS:", response);
+        } catch (error) {
+            console.error("Error sending message to SQS:", error);
+        }
+    };
 
     const checkWinner = () => {
         // row dynamic
@@ -87,31 +128,52 @@ const Game = () => {
 
     useEffect(() => {
         const winner = checkWinner();
-        if (winner && !finishedState) {
+        if (winner && !finishedStateRef.current) {
             setFinishedState(winner);
 
             if (winner !== "opponentLeftMatch" && winner !== "draw") {
-                socket.emit("results", {
-                    result: {
-                        playerName: playerName,
-                        result: winner === playingAs ? 1 : 0,
-                    },
+                if (socket) {
+                    socket.emit("results", {
+                        result: {
+                            playerName: playerName,
+                            result: winner === playingAs ? 1 : 0,
+                        },
+                    });
+                }
+                sendMessageToSQS({
+                    type: 'game_over',
+                    result: winner === playingAs ? "win" : "loss",
+                    playerName: playerName,
                 });
             }
 
             if (winner === "draw") {
-                socket.emit("results", {
-                    result: {
-                        playerName: playerName,
-                        result: 0.5,
-                    },
+                if (socket) {
+                    socket.emit("results", {
+                        result: {
+                            playerName: playerName,
+                            result: 0.5,
+                        },
+                    });
+                }
+                sendMessageToSQS({
+                    type: 'game_over',
+                    result: "draw",
+                    playerName: playerName,
                 });
             }
         }
-    }, [gameState, finishedState]);
+    }, [gameState, socket, playerName, playingAs]);
 
     socket?.on("opponentLeftMatch", () => {
-        setFinishedState("opponentLeftMatch");
+        if (!finishedStateRef.current) {
+            setFinishedState("opponentLeftMatch");
+            sendMessageToSQS({
+                type: 'game_over',
+                result: 'opponent_left',
+                playerName: playerName,
+            });
+        }
     });
 
     socket?.on("playerMoveFromServer", (data) => {
@@ -174,7 +236,9 @@ const Game = () => {
     }, [newGame]);
 
     function playAgainClick() {
-        socket.disconnect();
+        if (socket) {
+            socket.disconnect();
+        }
         setGameState(JSON.parse(JSON.stringify(renderFrom)));
         setFinishedState(false);
         setFinishedArrayState([]);

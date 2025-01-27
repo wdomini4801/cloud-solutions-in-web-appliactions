@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./Square.css";
+import { SQSClient, SendMessageCommand } from "@aws-sdk/client-sqs";
 
 const circleSvg = (
     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -43,6 +44,42 @@ const crossSvg = (
     </svg>
 );
 
+const QUEUE_URL = 'https://sqs.us-east-1.amazonaws.com/801415982270/websocket-message-queue';
+
+const sqsClient = new SQSClient({ 
+    region: "us-east-1",
+    credentials: {
+        accessKeyId: "ASIA3VGA5NS7KENOEID3",
+        secretAccessKey: "XEgnAwJQ0K0nny/q2FUPdb+zjM6TchfJkehad+L3",
+        sessionToken: "IQoJb3JpZ2luX2VjEEYaCXVzLXdlc3QtMiJIMEYCIQDTQ3H\
+        cfbKiY7LY2YRvPCySd590cxxW2b2nL5ZsIWhRowIhAK8Say5W4294uitf5GuSIX\
+        ApO8xniUj2cPFotRzFShmzKqsCCE8QARoMODAxNDE1OTgyMjcwIgyGDFzHh8bxqP\
+        NeqfYqiAKPwe/HR+Kdu4yRnZgMxaqIsapss5VePk7SIK+rnbqZrgjjXNJjkWlhbZc\
+        4mA87YhD5YXkRVNkzqMiTfXQWtaG/WwZEdTdaeOIZC87vNG8dJfEwN7Rb/NqzoovmY\
+        dr1BSEhMmBPGBk8tGSMmm2dJzWu58t9oi766ClLyZKSWKKxcsTSNmGrdw73OaQ5o+k\
+        HdRrZ4ONubtooyEurgWxB8YEs3FlflNIvxb/FaXK/WMB9Kn8eUXI75YUXfRTSiNfDxE\
+        gm9veA3aQ6IRdkSwinclT0K3bRQGZIiNcNKlSmFCnQLln2fB2c/fy1vV5I3SBiyJdrSJ\
+        rcQAxuRdTZrb7NC/cTAD64JKY+qL4wy+javAY6nAE9cCFaj/UxkAFOVF0hxEmCkIlb87\
+        SI5YOZ502XGlhSb6529YVKaK0mDTwtU/FbQ2zIC6TfYTiLjLDBsliyXQtQeM8e5iIRkp2\
+        TkT6vXZ7GpOSR0o9bgQvmlgXcT4EtR6YWvmJ6WCexYaN4o195J5c/vHOIwOvwU5sNGhtt\
+        cPwr8FJ2Nd/7EhE1XRfXCeEsxcVswUuv4dl/IC7eN20="
+    }, 
+});
+
+const sendMessageToSQS = async (messageBody) => {
+    try {
+        const params = {
+            QueueUrl: QUEUE_URL,
+            MessageBody: JSON.stringify(messageBody),
+        };
+        const command = new SendMessageCommand(params);
+        const response = await sqsClient.send(command);
+        console.log("Message sent to SQS:", response);
+    } catch (error) {
+        console.error("Error sending message to SQS:", error);
+    }
+};
+
 const Square = ({
                     gameState,
                     setGameState,
@@ -84,6 +121,14 @@ const Square = ({
             if (currentElement !== "circle" && currentElement !== "cross") {
                 const myCurrentPlayer = currentPlayer;
                 socket.emit("playerMoveFromClient", {
+                    state: {
+                        id,
+                        sign: myCurrentPlayer,
+                    },
+                });
+
+                sendMessageToSQS({
+                    type: 'player_move',
                     state: {
                         id,
                         sign: myCurrentPlayer,
