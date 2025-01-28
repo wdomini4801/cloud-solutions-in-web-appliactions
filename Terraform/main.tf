@@ -262,26 +262,25 @@ resource "aws_sns_topic" "alarm_sns" {
   name               = "AlarmSNS.fifo"
   fifo_topic         = true     
   content_based_deduplication = true
+}
+
+resource "aws_sns_topic_policy" "sns_policy" {
+  arn = aws_sns_topic.alarm_sns.arn
 
   policy = jsonencode({
-    "Version": "2012-10-17",
-    "Id": "__default_policy_ID",
-    "Statement": [
+    "Version" : "2012-10-17",
+    "Statement" : [
       {
-        "Sid": "__owner_statement",
-        "Effect": "Allow",
-        "Principal": {
-          "AWS": "arn:aws:iam::801415982270:root"
+        "Effect" : "Allow",
+        "Principal" : {
+          "Service" : "cloudwatch.amazonaws.com"
         },
-        "Action": [
-          "SNS:Publish"
-        ],
-        "Resource": "arn:aws:sns:us-east-1:801415982270:AlarmSNS.fifo"
+        "Action" : "SNS:Publish",
+        "Resource" : aws_sns_topic.alarm_sns.arn
       }
     ]
   })
 }
-
 
 resource "aws_sqs_queue" "alarm_terra_queue" {
   name                      = "websocket-alarm-queue"
@@ -318,4 +317,27 @@ resource "aws_sns_topic_subscription" "sns_to_sqs" {
   protocol  = "sqs"
   endpoint  = aws_sqs_queue.alarm_terra_queue.arn
   raw_message_delivery = true
+}
+
+resource "aws_cloudwatch_metric_alarm" "messages_alarm" {
+  alarm_name          = "MessagesAlarm"
+  alarm_description   = "Alarm when more than 5 messages are sent to the SQS queue."
+  namespace           = "AWS/SQS"
+  metric_name         = "NumberOfMessagesSent"
+  dimensions = {
+    QueueName = aws_sqs_queue.websocket_terra_queue.name
+  }
+  statistic           = "Sum"
+  period              = 60
+  threshold           = 5
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods  = 1
+  datapoints_to_alarm = 1
+
+  alarm_actions = [
+    aws_sns_topic.alarm_sns.arn
+  ]
+  ok_actions = []
+  insufficient_data_actions = []
+  treat_missing_data = "notBreaching"
 }
