@@ -111,10 +111,11 @@ resource "aws_security_group_rule" "allow_app_all_outbound" {
 resource "aws_sqs_queue" "websocket_terra_queue" {
   name                      = "websocket-terra-queue"
   visibility_timeout_seconds = 40
-  message_retention_seconds  = 345600 # 4 days in seconds
+  message_retention_seconds  = 345600 # 4 days
   delay_seconds              = 0
   max_message_size           = 262144 # 256 KB
   receive_wait_time_seconds  = 0
+  sqs_managed_sse_enabled    = false
 
   policy = jsonencode({
     "Version": "2012-10-17",
@@ -135,10 +136,6 @@ resource "aws_sqs_queue" "websocket_terra_queue" {
   })
 }
 
-output "queue_url" {
-  value = aws_sqs_queue.websocket_terra_queue.id
-}
-
 resource "aws_elastic_beanstalk_application" "tictactoe_terra" {
   name        = "tictactoe-terra"
 }
@@ -152,6 +149,7 @@ resource "aws_elastic_beanstalk_application_version" "tictactoe_version" {
 
 resource "aws_elastic_beanstalk_environment" "terra_env" {
   name                = "Terra-env"
+  cname_prefix        = "tictactoe-terra"
   application         = aws_elastic_beanstalk_application.tictactoe_terra.name
   version_label       = aws_elastic_beanstalk_application_version.tictactoe_version.name
   solution_stack_name = "64bit Amazon Linux 2 v4.0.6 running Docker"
@@ -231,4 +229,93 @@ resource "aws_elastic_beanstalk_environment" "terra_env" {
       name = "IgnoreHealthCheck"
       value = "false"
   }
+}
+
+resource "aws_lambda_function" "lambda_function" {
+  function_name    = "websocket-terra-function"
+  runtime          = "nodejs22.x"
+  handler          = "index.handler"
+  timeout          = 10
+  memory_size      = 128
+  role             = "arn:aws:iam::801415982270:role/LabRole" 
+  s3_bucket        = "wdomini4801-bucket"
+  s3_key           = "lambda.zip"
+
+  reserved_concurrent_executions = 2
+
+  environment {
+    variables = {
+      NODE_ENV = "production"
+    }
+  }
+}
+
+resource "aws_lambda_event_source_mapping" "sqs_trigger" {
+  event_source_arn  = aws_sqs_queue.websocket_terra_queue.arn
+  function_name     = aws_lambda_function.lambda_function.arn
+  batch_size        = 1
+  maximum_batching_window_in_seconds = 0
+  enabled           = true
+}
+
+resource "aws_sns_topic" "alarm_sns" {
+  name               = "AlarmSNS.fifo"
+  fifo_topic         = true     
+  content_based_deduplication = true
+
+  policy = jsonencode({
+    "Version": "2012-10-17",
+    "Id": "__default_policy_ID",
+    "Statement": [
+      {
+        "Sid": "__owner_statement",
+        "Effect": "Allow",
+        "Principal": {
+          "AWS": "arn:aws:iam::801415982270:root"
+        },
+        "Action": [
+          "SNS:Publish"
+        ],
+        "Resource": "arn:aws:sns:us-east-1:801415982270:AlarmSNS.fifo"
+      }
+    ]
+  })
+}
+
+
+resource "aws_sqs_queue" "alarm_terra_queue" {
+  name                      = "websocket-alarm-queue"
+  visibility_timeout_seconds = 30
+  message_retention_seconds  = 345600 # 4 days
+  delay_seconds              = 0
+  max_message_size           = 262144 # 256 KB
+  receive_wait_time_seconds  = 0
+  sqs_managed_sse_enabled    = false
+
+  policy = <<POLICY
+    {
+      "Version":"2012-10-17",
+      "Statement":[
+        {
+          "Sid":"MySQSPolicy001",
+          "Effect":"Allow",
+          "Principal":"*",
+          "Action":"sqs:SendMessage",
+          "Resource":"arn:aws:sqs:us-east-1:801415982270:MyQueue",
+          "Condition":{
+            "ArnEquals":{
+              "aws:SourceArn":"${aws_sns_topic.alarm_sns.arn}"
+            }
+          }
+        }
+      ]
+    }
+    POLICY
+}
+
+resource "aws_sns_topic_subscription" "sns_to_sqs" {
+  topic_arn = aws_sns_topic.alarm_sns.arn
+  protocol  = "sqs"
+  endpoint  = aws_sqs_queue.alarm_terra_queue.arn
+  raw_message_delivery = true
 }
